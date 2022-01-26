@@ -76,6 +76,9 @@ echo
 echo "access argocd dashboard:"
 echo "kubectl port-forward svc/argocd-server -n argocd 8080:443 --context ${mgmt_context}"
 echo
+echo "useful mesh config examples that can be manually deployed when get started can be found here:"
+echo "cd environments/mgmt/mesh-config/examples/"
+echo 
 echo "You can use the following command to validate which cluster handles the requests:"
 echo "kubectl --context ${cluster1_context} logs -l app=reviews -c istio-proxy -f"
 echo "kubectl --context ${cluster2_context} logs -l app=reviews -c istio-proxy -f"

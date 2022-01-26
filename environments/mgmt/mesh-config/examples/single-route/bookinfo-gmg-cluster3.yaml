@@ -1,0 +1,67 @@
+apiVersion: networking.enterprise.mesh.gloo.solo.io/v1beta1
+kind: RouteTable
+metadata:
+  name: bookinfo-routetable
+  namespace: gloo-mesh
+spec:
+  routes:
+  - matchers:
+    - uri:
+        exact: /productpage
+    - uri:
+        prefix: /static
+    - uri:
+        exact: /login
+    - uri:
+        exact: /logout
+    - uri:
+        prefix: /api/v1/products
+    name: productpage
+    routeAction:
+      destinations:
+      - kubeService:
+          clusterName: cluster3
+          name: productpage
+          namespace: default
+---
+apiVersion: networking.enterprise.mesh.gloo.solo.io/v1beta1
+kind: VirtualGateway
+metadata:
+  name: bookinfo-virtualgateway
+  namespace: gloo-mesh
+spec:
+  connectionHandlers:
+  - http:
+      routeConfig:
+      - virtualHostSelector:
+          namespaces:
+          - gloo-mesh
+  ingressGatewaySelectors:
+  - destinationSelectors:
+    - kubeServiceMatcher:
+        clusters:
+        - cluster1
+        - cluster2
+        - cluster3
+        labels:
+          istio: ingressgateway
+        namespaces:
+        - istio-system
+    portName: http2
+---
+apiVersion: networking.enterprise.mesh.gloo.solo.io/v1beta1
+kind: VirtualHost
+metadata:
+  name: bookinfo-virtualhost
+  namespace: gloo-mesh
+spec:
+  domains:
+  - '*'
+  routes:
+  - delegateAction:
+      selector:
+        namespaces:
+        - gloo-mesh
+    matchers:
+    - uri:
+        prefix: /
