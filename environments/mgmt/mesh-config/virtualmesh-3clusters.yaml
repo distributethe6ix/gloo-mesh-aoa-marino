@@ -13,6 +13,8 @@ spec:
     namespace: gloo-mesh
   - name: istiod-istio-system-cluster2
     namespace: gloo-mesh
+  - name: istiod-istio-system-cluster3
+    namespace: gloo-mesh
   mtlsConfig:
     autoRestartPods: true
     shared:

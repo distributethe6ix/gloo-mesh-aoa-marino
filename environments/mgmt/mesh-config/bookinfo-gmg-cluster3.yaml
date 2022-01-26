@@ -20,7 +20,7 @@ spec:
     routeAction:
       destinations:
       - kubeService:
-          clusterName: cluster1
+          clusterName: cluster3
           name: productpage
           namespace: default
 ---
@@ -42,6 +42,7 @@ spec:
         clusters:
         - cluster1
         - cluster2
+        - cluster3
         labels:
           istio: ingressgateway
         namespaces:
