@@ -1,7 +1,14 @@
 # tested on macos
-
 #/bin/bash
 github_username=''$1''
+
+# check to see if license key variable was passed through, if not prompt for key
+if [[ ${github_username} == "" ]]
+  then
+    # provide license key
+    echo "Please provide the Github username used to fork this repo:"
+    read github_username
+fi
 
 # sed commands to replace github_username variable
 
