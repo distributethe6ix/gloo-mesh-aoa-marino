@@ -2,11 +2,11 @@
 #/bin/bash
 github_branch=''$1''
 
-# check to see if license key variable was passed through, if not prompt for key
+# check to see if github branch variable was passed through, if not prompt for it
 if [[ ${github_branch} == "" ]]
   then
-    # provide license key
-    echo "Please provide the Github username used to fork this repo:"
+    # provide github branch
+    echo "Please provide the GitHub branch you want to use:"
     read github_branch
 fi
 
