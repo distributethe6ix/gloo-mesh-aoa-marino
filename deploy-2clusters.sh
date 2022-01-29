@@ -5,7 +5,7 @@ set -e
 cluster1_context="cluster1"
 cluster2_context="cluster2"
 mgmt_context="mgmt"
-gloo_mesh_version="1.2.9"
+gloo_mesh_version="1.3.0-beta8"
 
 # check to see if defined contexts exist
 if [[ $(kubectl config get-contexts | grep ${mgmt_context}) == "" ]] || [[ $(kubectl config get-contexts | grep ${cluster1_context}) == "" ]] || [[ $(kubectl config get-contexts | grep ${cluster2_context}) == "" ]]; then
