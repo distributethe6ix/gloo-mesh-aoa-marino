@@ -9,11 +9,11 @@ spec:
   hosts:
   - '*'
   http:
-  - match:
-    - uri:
-        exact: "/hipstershop"
-    rewrite:
-      uri: "/"
+  - #match:
+    #- uri:
+    #    exact: "/"
+    #rewrite:
+    #  uri: "/"
     route:
     - destination:
         host: frontend
