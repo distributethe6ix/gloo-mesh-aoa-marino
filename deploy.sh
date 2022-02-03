@@ -3,7 +3,6 @@ set -e
 
 # note that the character '_' is an invalid value if you are replacing the defaults below
 cluster1_context="cluster1"
-gloo_mesh_version="1.3.0-beta8"
 
 # check to see if defined contexts exist
 if [[ $(kubectl config get-contexts | grep ${cluster1_context}) == "" ]] ; then
