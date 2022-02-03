@@ -20,9 +20,20 @@ spec:
     routeAction:
       destinations:
       - kubeService:
+          clusterName: cluster1
+          name: productpage
+          namespace: default
+        weight: 30
+      - kubeService:
           clusterName: cluster2
           name: productpage
           namespace: default
+        weight: 30
+      - kubeService:
+          clusterName: cluster3
+          name: productpage
+          namespace: default
+        weight: 40
 ---
 apiVersion: networking.enterprise.mesh.gloo.solo.io/v1beta1
 kind: VirtualGateway
@@ -39,9 +50,6 @@ spec:
   ingressGatewaySelectors:
   - destinationSelectors:
     - kubeServiceMatcher:
-        clusters:
-        - cluster1
-        - cluster2
         labels:
           istio: ingressgateway
         namespaces:
@@ -64,3 +72,41 @@ spec:
     matchers:
     - uri:
         prefix: /
+---
+apiVersion: networking.mesh.gloo.solo.io/v1
+kind: TrafficPolicy
+metadata:
+  name: reviews-trafficshift
+  namespace: gloo-mesh
+spec:
+  destinationSelector:
+  - kubeServiceMatcher:
+      clusters:
+      - cluster1
+      - cluster2
+      labels:
+        app: reviews
+  routeSelector:
+    - virtualHostSelector:
+        namespaces:
+          - gloo-mesh
+        labels:
+          type: north-south
+  policy:
+    trafficShift:
+      destinations:
+        - kubeService:
+            clusterName: cluster1
+            name: reviews
+            namespace: default
+          weight: 100
+        - kubeService:
+            clusterName: cluster2
+            name: reviews
+            namespace: default
+          weight: 0
+        - kubeService:
+            clusterName: cluster3
+            name: reviews
+            namespace: default
+          weight: 0
