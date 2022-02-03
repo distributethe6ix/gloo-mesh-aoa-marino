@@ -7,7 +7,7 @@ spec:
   destinationSelector:
   - kubeServiceRefs:
       services:
-        - clusterName: cluster3
+        - clusterName: cluster2
           name: ratings
           namespace: default
   policy:
