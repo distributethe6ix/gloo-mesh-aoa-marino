@@ -1,20 +1,20 @@
-apiVersion: argoproj.io/v1alpha1
-kind: Application
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
 metadata:
-  name: hipstershop-vs
-  namespace: argocd
-  finalizers:
-  - resources-finalizer.argocd.argoproj.io
+  name: hipstershop-frontend-vs
 spec:
-  project: default
-  source:
-    repoURL: https://github.com/solo-io/gitops-library
-    targetRevision: HEAD
-    path: hipstershop/overlay/virtualservice/istio/1-hipstershop-vs-frontend/
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: hipstershop
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
+  gateways:
+  - hipstershop-gateway
+  hosts:
+  - '*'
+  http:
+  - match:
+    - uri:
+        exact: "/hipstershop"
+    rewrite:
+      uri: "/"
+    route:
+    - destination:
+        host: frontend
+        port:
+          number: 80
