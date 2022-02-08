@@ -105,8 +105,3 @@ spec:
             name: reviews
             namespace: default
           weight: 50
-        - kubeService:
-            clusterName: cluster3
-            name: reviews
-            namespace: default
-          weight: 0
