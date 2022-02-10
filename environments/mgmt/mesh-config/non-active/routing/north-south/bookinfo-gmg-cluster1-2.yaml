@@ -23,17 +23,12 @@ spec:
           clusterName: cluster1
           name: productpage
           namespace: default
-        weight: 30
+        weight: 50
       - kubeService:
           clusterName: cluster2
           name: productpage
           namespace: default
-        weight: 30
-      - kubeService:
-          clusterName: cluster3
-          name: productpage
-          namespace: default
-        weight: 40
+        weight: 50
 ---
 apiVersion: networking.enterprise.mesh.gloo.solo.io/v1beta1
 kind: VirtualGateway
@@ -105,8 +100,3 @@ spec:
             name: reviews
             namespace: default
           weight: 50
-        - kubeService:
-            clusterName: cluster3
-            name: reviews
-            namespace: default
-          weight: 0
