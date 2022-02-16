@@ -186,7 +186,7 @@ spec:
               key: server.default.cache.expiration
               name: argocd-cmd-params-cm
               optional: true
-        image: quay.io/argoproj/argocd:v2.1.7
+        image: quay.io/argoproj/argocd:v2.3.0-rc5
         imagePullPolicy: Always
         livenessProbe:
           httpGet:
