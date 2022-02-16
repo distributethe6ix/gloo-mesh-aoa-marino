@@ -1,19 +1,22 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: meta-cluster2-mesh-config
+  name: bookinfo-v1-app
   namespace: argocd
   finalizers:
   - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   source:
-    repoURL: https://github.com/ably77/gloo-mesh-aoa/
-    targetRevision: 2-cluster-demo
-    path: environments/cluster2/mesh-config/active/
+    repoURL: https://github.com/ably77/solo-testbed-apps
+    targetRevision: HEAD
+    path: kustomize/environments/overlays/openshift/bookinfo-v1/
   destination:
     server: https://kubernetes.default.svc
+    namespace: bookinfo-v1
   syncPolicy:
     automated:
       prune: false
       selfHeal: false
+    syncOptions:
+      - CreateNamespace=true

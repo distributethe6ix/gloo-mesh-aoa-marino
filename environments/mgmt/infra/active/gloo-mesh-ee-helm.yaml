@@ -14,9 +14,25 @@ spec:
     chart: gloo-mesh-enterprise
     helm:
       values: |
-        licenseKey: eyJleHAiOjE2NDQ4ODgyNjQsImlhdCI6MTY0NDI4MzQ2NCwiayI6ImZETktnZyIsImx0IjoidHJpYWwiLCJwcm9kdWN0IjoiZ2xvbyJ9.nykTMT2dUjpAFXwyuzh6aG-hqZhvlCx24DGT6RIBmH8
+        licenseKey: eyJleHAiOjE2NDUyMTAwMzQsImlhdCI6MTY0MjYxODAzNCwiayI6IjRlZTJEUSIsImx0IjoidHJpYWwiLCJwcm9kdWN0IjoiZ2xvbyJ9.1uwlkqzhwM9G_AksQgZNRMObduxKWKeEo-DLnNAk4-k
+        rbac-webhook:
+          enabled: true
+          rbacWebhook:
+            floatingUserId: true
+        enterprise-networking:
+          prometheus:
+            server:
+              securityContext: false
+          enterpriseNetworking:
+            floatingUserId: true
+        gloo-mesh-ui:
+          dashboard:
+            floatingUserId: true
+          redis-dashboard:
+            redisDashboard:
+              floatingUserId: true
     repoURL: https://storage.googleapis.com/gloo-mesh-enterprise/gloo-mesh-enterprise
-    targetRevision: 1.3.0-beta8
+    targetRevision: 1.2.16
   syncPolicy:
     automated:
       prune: true
