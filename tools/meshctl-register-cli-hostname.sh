@@ -22,7 +22,8 @@ curl -sL https://run.solo.io/meshctl/install | sh -
 export PATH=$HOME/.gloo-mesh/bin:$PATH
 
 # set SVC variable to enterprise-networking pod loadBalancer ip
-SVC=$(kubectl --context ${MGMT_CONTEXT} -n gloo-mesh get svc enterprise-networking -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+#SVC=$(kubectl --context ${MGMT_CONTEXT} -n gloo-mesh get svc enterprise-networking -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+SVC=$(kubectl --context ${MGMT_CONTEXT} -n gloo-mesh get svc enterprise-networking -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
 
 # register cluster with meshctl
 meshctl cluster register --mgmt-context=${MGMT_CONTEXT} --remote-context=${REMOTE_CONTEXT} --relay-server-address=$SVC:9900 enterprise ${REMOTE_CONTEXT} --cluster-domain cluster.local
