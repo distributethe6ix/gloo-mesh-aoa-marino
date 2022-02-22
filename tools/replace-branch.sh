@@ -26,21 +26,3 @@ sed -i '' -e 's/'${current_branch}'/'${target_branch}'/g' ../platform-owners/clu
 sed -i '' -e 's/'${current_branch}'/'${target_branch}'/g' ../platform-owners/cluster1/cluster1-cluster-config.yaml
 sed -i '' -e 's/'${current_branch}'/'${target_branch}'/g' ../platform-owners/cluster1/cluster1-infra.yaml
 sed -i '' -e 's/'${current_branch}'/'${target_branch}'/g' ../platform-owners/cluster1/cluster1-mesh-config.yaml
-
-#platform-owners/cluster2
-sed -i '' -e 's/'${current_branch}'/'${target_branch}'/g' ../platform-owners/cluster2/cluster2-apps.yaml
-sed -i '' -e 's/'${current_branch}'/'${target_branch}'/g' ../platform-owners/cluster2/cluster2-cluster-config.yaml
-sed -i '' -e 's/'${current_branch}'/'${target_branch}'/g' ../platform-owners/cluster2/cluster2-infra.yaml
-sed -i '' -e 's/'${current_branch}'/'${target_branch}'/g' ../platform-owners/cluster2/cluster2-mesh-config.yaml
-
-#platform-owners/cluster3
-sed -i '' -e 's/'${current_branch}'/'${target_branch}'/g' ../platform-owners/cluster3/cluster3-apps.yaml
-sed -i '' -e 's/'${current_branch}'/'${target_branch}'/g' ../platform-owners/cluster3/cluster3-cluster-config.yaml
-sed -i '' -e 's/'${current_branch}'/'${target_branch}'/g' ../platform-owners/cluster3/cluster3-infra.yaml
-sed -i '' -e 's/'${current_branch}'/'${target_branch}'/g' ../platform-owners/cluster3/cluster3-mesh-config.yaml
-
-#platform-owners/mgmt
-sed -i '' -e 's/'${current_branch}'/'${target_branch}'/g' ../platform-owners/mgmt/mgmt-apps.yaml
-sed -i '' -e 's/'${current_branch}'/'${target_branch}'/g' ../platform-owners/mgmt/mgmt-cluster-config.yaml
-sed -i '' -e 's/'${current_branch}'/'${target_branch}'/g' ../platform-owners/mgmt/mgmt-infra.yaml
-sed -i '' -e 's/'${current_branch}'/'${target_branch}'/g' ../platform-owners/mgmt/mgmt-mesh-config.yaml
