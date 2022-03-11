@@ -6,10 +6,15 @@ cluster1_context="$2"
 cluster2_context="$3"
 cluster3_context="$4"
 gloo_mesh_version="$5"
+svc_type="$6" # ip/hostname
 
 # register clusters to gloo mesh with helm
 
-SVC=$(kubectl --context ${mgmt_context} -n gloo-mesh get svc enterprise-networking -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+until [ "${SVC}" != "" ]; do
+  SVC=$(kubectl --context ${mgmt_context} -n gloo-mesh get svc enterprise-networking -o jsonpath='{.status.loadBalancer.ingress[0].'${svc_type}'}')
+  echo waiting for LoadBalancer IP
+  sleep 2
+done
 
 kubectl apply --context ${mgmt_context} -f- <<EOF
 apiVersion: multicluster.solo.io/v1alpha1
