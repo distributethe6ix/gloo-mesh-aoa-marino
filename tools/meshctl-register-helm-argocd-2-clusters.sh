@@ -73,17 +73,17 @@ spec:
         - values.yaml
       parameters:
         - name: cluster
-          value: cluster1
+          value: 'cluster1'
         - name: relay.serverAddress
           value: '${SVC}:9900'
         - name: relay.authority
-          value: gloo-mesh-mgmt-server.gloo-mesh
+          value: 'gloo-mesh-mgmt-server.gloo-mesh'
         - name: rate-limiter.enabled
-          value: false
+          value: 'false'
         - name: ext-auth-service.enabled
-          value: false
+          value: 'false'
         - name: relay.tokenSecret.namespace
-          value: gloo-mesh
+          value: 'gloo-mesh'
   syncPolicy:
     automated:
       prune: false
@@ -114,17 +114,17 @@ spec:
         - values.yaml
       parameters:
         - name: cluster
-          value: cluster2
+          value: 'cluster2'
         - name: relay.serverAddress
           value: '${SVC}:9900'
         - name: relay.authority
-          value: gloo-mesh-mgmt-server.gloo-mesh
+          value: 'gloo-mesh-mgmt-server.gloo-mesh'
         - name: rate-limiter.enabled
-          value: false
+          value: 'false'
         - name: ext-auth-service.enabled
-          value: false
+          value: 'false'
         - name: relay.tokenSecret.namespace
-          value: gloo-mesh
+          value: 'gloo-mesh'
   syncPolicy:
     automated:
       prune: false
