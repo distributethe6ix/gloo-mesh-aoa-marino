@@ -15,21 +15,25 @@ until [ "${SVC}" != "" ]; do
 done
 
 kubectl apply --context ${mgmt_context} -f- <<EOF
-apiVersion: multicluster.solo.io/v1alpha1
+apiVersion: admin.gloo.solo.io/v2
 kind: KubernetesCluster
 metadata:
   name: cluster1
   namespace: gloo-mesh
+  labels:
+    env: test
 spec:
   clusterDomain: cluster.local
 EOF
 
 kubectl apply --context ${mgmt_context} -f- <<EOF
-apiVersion: multicluster.solo.io/v1alpha1
+apiVersion: admin.gloo.solo.io/v2
 kind: KubernetesCluster
 metadata:
-  name: cluster2
+  name: cluster1
   namespace: gloo-mesh
+  labels:
+    env: test
 spec:
   clusterDomain: cluster.local
 EOF
@@ -68,14 +72,18 @@ spec:
       valueFiles:
         - values.yaml
       parameters:
-        - name: relay.cluster
+        - name: cluster
           value: cluster1
         - name: relay.serverAddress
           value: '${SVC}:9900'
+        - name: relay.authority
+          value: gloo-mesh-mgmt-server.gloo-mesh
+        - name: rate-limiter.enabled
+          value: false
+        - name: ext-auth-service.enabled
+          value: false
         - name: relay.tokenSecret.namespace
           value: gloo-mesh
-        - name: authority
-          value: enterprise-networking.gloo-mesh
   syncPolicy:
     automated:
       prune: false
@@ -105,14 +113,18 @@ spec:
       valueFiles:
         - values.yaml
       parameters:
-        - name: relay.cluster
+        - name: cluster
           value: cluster2
         - name: relay.serverAddress
-          value: '$SVC:9900'
+          value: '${SVC}:9900'
+        - name: relay.authority
+          value: gloo-mesh-mgmt-server.gloo-mesh
+        - name: rate-limiter.enabled
+          value: false
+        - name: ext-auth-service.enabled
+          value: false
         - name: relay.tokenSecret.namespace
           value: gloo-mesh
-        - name: authority
-          value: enterprise-networking.gloo-mesh
   syncPolicy:
     automated:
       prune: false
