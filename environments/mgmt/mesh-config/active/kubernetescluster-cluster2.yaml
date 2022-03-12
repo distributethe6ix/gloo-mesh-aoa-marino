@@ -1,7 +1,9 @@
-apiVersion: multicluster.solo.io/v1alpha1
+apiVersion: admin.gloo.solo.io/v2
 kind: KubernetesCluster
 metadata:
   name: cluster2
   namespace: gloo-mesh
+  labels:
+    env: test
 spec:
   clusterDomain: cluster.local
