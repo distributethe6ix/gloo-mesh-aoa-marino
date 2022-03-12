@@ -5,13 +5,12 @@ mgmt_context="$1"
 cluster1_context="$2"
 cluster2_context="$3"
 gloo_mesh_version="$4"
-svc_type="$5" # ip/hostname
 
 # register clusters to gloo mesh with helm
 
 until [ "${SVC}" != "" ]; do
-  SVC=$(kubectl --context ${mgmt_context} -n gloo-mesh get svc enterprise-networking -o jsonpath='{.status.loadBalancer.ingress[0].'${svc_type}'}')
-  echo waiting for LoadBalancer IP
+  SVC=$(kubectl --context ${MGMT} -n gloo-mesh get svc gloo-mesh-mgmt-server -o jsonpath='{.status.loadBalancer.ingress[0].*}')
+  echo waiting for gloo mesh management server LoadBalancer IP to be detected
   sleep 2
 done
 

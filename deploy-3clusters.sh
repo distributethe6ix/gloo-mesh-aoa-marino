@@ -7,7 +7,6 @@ cluster2_context="cluster2"
 cluster3_context="cluster3"
 mgmt_context="mgmt"
 gloo_mesh_version="1.3.0-beta8"
-svc_type="ip" # ip/hostname - used by registration script for discovering LoadBalancer ip/hostname depending on Cloud Platform
 
 # check to see if defined contexts exist
 if [[ $(kubectl config get-contexts | grep ${mgmt_context}) == "" ]] || [[ $(kubectl config get-contexts | grep ${cluster1_context}) == "" ]] || [[ $(kubectl config get-contexts | grep ${cluster2_context}) == "" ]]; then
@@ -49,7 +48,7 @@ kubectl apply -f platform-owners/cluster3/cluster3-infra.yaml --context ${cluste
 
 # register clusters to gloo mesh
 #./tools/meshctl-register-helm-argocd.sh ${mgmt_context} ${cluster1_context} ${cluster2_context} ${gloo_mesh_version}
-./tools/meshctl-register-helm-argocd-3-clusters.sh ${mgmt_context} ${cluster1_context} ${cluster2_context} ${cluster3_context} ${gloo_mesh_version} ${svc_type}
+./tools/meshctl-register-helm-argocd-3-clusters.sh ${mgmt_context} ${cluster1_context} ${cluster2_context} ${cluster3_context} ${gloo_mesh_version}
 
 
 # deploy cluster1, and cluster2 environment apps aoa
