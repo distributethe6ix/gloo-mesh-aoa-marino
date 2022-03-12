@@ -1,12 +1,11 @@
 # gloo-mesh-demo-aoa
 This repo provides a multitenant capable GitOps workflow structure that can be forked and used to demonstrate the deployment and configuration a multi-cluster mesh demo as code using the Argo CD app-of-apps pattern
  
-Spin up three clusters named `cluster1`, `cluster2`, `cluster3` (optional), and `mgmt`
+Spin up three clusters named `cluster1`, `cluster2`, `cluster3`, and `mgmt`
 
 Run:
 ```
-./deploy-2clusters.sh           # deploys on mgmt, cluster1, cluster2
-./deploy-3clusters.sh           # deploys on mgmt, cluster1, cluster2, cluster3
+./deploy.sh           # deploys on mgmt, cluster1, cluster2, cluster3
 ```
 
 Resource Requirements:
@@ -16,7 +15,7 @@ Resource Requirements:
 Note:
 - A temporary (5 day currently) license key is used here for demonstration purposes
 - By default, the script expects to deploy into three clusters named `mgmt`, `cluster1`, `cluster2`, and `cluster3` (optional). 
-- Context parameters can be changed from defaults by changing the variables in the `deploy-2clusters.sh` and `deploy-3clusters.sh` scripts. A check is done to ensure that the defined contexts exist before proceeding with the installation. Note that the character `_` is an invalid value if you are replacing default contexts
+- Context parameters can be changed from defaults by changing the variables in the `deploy.sh` script. A check is done to ensure that the defined contexts exist before proceeding with the installation. Note that the character `_` is an invalid value if you are replacing default contexts
 - Although you may change the contexts where apps are deployed as describe above, the Istio cluster names will remain stable references `cluster1` and `cluster2`
 
 # App of Apps Explained

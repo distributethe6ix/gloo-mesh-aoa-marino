@@ -1,0 +1,1 @@
+for i in {1..10}; do curl -s http://20.112.57.136/reviews/0;echo ''; done
