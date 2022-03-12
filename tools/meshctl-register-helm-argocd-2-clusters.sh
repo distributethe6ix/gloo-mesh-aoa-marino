@@ -65,9 +65,9 @@ spec:
     server: https://kubernetes.default.svc
     namespace: gloo-mesh
   source:
-    repoURL: 'https://storage.googleapis.com/gloo-mesh-enterprise/enterprise-agent'
+    repoURL: 'https://storage.googleapis.com/gloo-mesh-enterprise/gloo-mesh-agent'
     targetRevision: ${gloo_mesh_version}
-    chart: enterprise-agent
+    chart: gloo-mesh-agent
     helm:
       valueFiles:
         - values.yaml
@@ -106,7 +106,7 @@ spec:
     server: https://kubernetes.default.svc
     namespace: gloo-mesh
   source:
-    repoURL: 'https://storage.googleapis.com/gloo-mesh-enterprise/enterprise-agent'
+    repoURL: 'https://storage.googleapis.com/gloo-mesh-enterprise/gloo-mesh-agent'
     targetRevision: ${gloo_mesh_version}
     chart: enterprise-agent
     helm:
