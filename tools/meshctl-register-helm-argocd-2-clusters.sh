@@ -108,7 +108,7 @@ spec:
   source:
     repoURL: 'https://storage.googleapis.com/gloo-mesh-enterprise/gloo-mesh-agent'
     targetRevision: ${gloo_mesh_version}
-    chart: enterprise-agent
+    chart: gloo-mesh-agent
     helm:
       valueFiles:
         - values.yaml
