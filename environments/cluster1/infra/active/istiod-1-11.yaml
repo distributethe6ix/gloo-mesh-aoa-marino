@@ -27,10 +27,10 @@ spec:
       holdApplicationUntilProxyStarts: true
       # Enable Gloo Mesh metrics service. Required for Gloo Mesh Dashboard
       envoyMetricsService:
-        address: enterprise-agent.gloo-mesh:9977
+        address: gloo-mesh-agent.gloo-mesh:9977
       # Enable Gloo Mesh accesslog service. Required for Gloo Mesh Access Logging
       envoyAccessLogService:
-        address: enterprise-agent.gloo-mesh:9977
+        address: gloo-mesh-agent.gloo-mesh:9977
       proxyMetadata:
         # Enable Istio agent to handle DNS requests for known hosts
         # Unknown hosts are automatically resolved using upstream DNS servers in resolv.conf (for proxy-dns)
