@@ -57,6 +57,7 @@ spec:
             - name: ISTIO_META_REQUESTED_NETWORK_VIEW
               value: "network1"
           service:
+            type: ClusterIP
             # Default ports
             ports:
               # Health check port. For AWS ELBs, this port must be listed first.
