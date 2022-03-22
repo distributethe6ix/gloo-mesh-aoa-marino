@@ -16,7 +16,7 @@ spec:
       values: |
         licenseKey: eyJleHAiOjE2NDgzMzc4NDcsImlhdCI6MTY0NzA0MTg0NywiayI6IlorTFo4USIsImx0IjoidHJpYWwiLCJwcm9kdWN0IjoiZ2xvbyJ9.hRU69S52pe_L4vTlNWWq6MQNM89d-e5cL4HpSXK4L5o
     repoURL: https://storage.googleapis.com/gloo-mesh-enterprise/gloo-mesh-enterprise
-    targetRevision: 2.0.0-beta15
+    targetRevision: 2.0.0-beta20
   syncPolicy:
     automated:
       prune: true
