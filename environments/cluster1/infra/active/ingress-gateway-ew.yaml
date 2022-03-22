@@ -68,6 +68,12 @@ spec:
                 targetPort: 15443
                 # Gloo Mesh looks for this default name 'tls' on a gateway
                 name: tls
+              - port: 15012
+                targetPort: 15012
+                name: tcp-istiod
+              - port: 15017
+                targetPort: 15017
+                name: tcp-webhook
           overlays:
             - apiVersion: apps/v1
               kind: Deployment
