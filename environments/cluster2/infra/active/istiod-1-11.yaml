@@ -39,13 +39,13 @@ spec:
         ISTIO_META_DNS_AUTO_ALLOCATE: "true"
         # Used for Gloo Mesh metrics aggregation; required for Gloo Mesh Dashboard
         # Must match the trustDomain
-        GLOO_MESH_CLUSTER_NAME: cluster1
+        GLOO_MESH_CLUSTER_NAME: cluster2
 
     # Set the default behavior of the sidecar for handling outbound traffic from the application
     outboundTrafficPolicy:
       mode: ALLOW_ANY
     # The trust root of a system, which is the name of the cluster that corresponds with the CA certificate CommonName identity
-    trustDomain: cluster1
+    trustDomain: cluster2
     # The administrative root namespace for Istio configuration
     rootNamespace: istio-system
 
@@ -99,11 +99,11 @@ spec:
     # https://istio.io/v1.5/docs/reference/config/installation-options/#global-options
     global:
       # Required for connecting VirtualMachines to the mesh
-      network: cluster1
+      network: cluster2
       # Required for annotating Istio metrics with the cluster name.
       # Must match the trustDomain and GLOO_MESH_CLUSTER_NAME
       multiCluster:
-        clusterName: cluster1
+        clusterName: cluster2
       # Sidecar resource settings
       # proxy:
       # The Istio load tests mesh consists of 1000 services and 2000 sidecars with 70,000 mesh-wide requests per second and istio-proxy used 0.35 vCPU and 40 MB memory per 1000 requests per second.

@@ -27,7 +27,7 @@ spec:
           version: 1-11
           app: istio-ingressgateway
           # Matches spec.values.global.network in the istiod deployment
-          topology.istio.io/network: cluster1
+          topology.istio.io/network: cluster2
         k8s:
           #hpaSpec:
           #  maxReplicas: 3
@@ -104,8 +104,8 @@ spec:
     # https://istio.io/v1.5/docs/reference/config/installation-options/#global-options
     global:
       # Required for connecting VirtualMachines to the mesh
-      network: cluster1
+      network: cluster2
       # Required for annotating Istio metrics with the cluster name.
       # Must match the trustDomain and GLOO_MESH_CLUSTER_NAME
       multiCluster:
-        clusterName: cluster1
+        clusterName: cluster2
