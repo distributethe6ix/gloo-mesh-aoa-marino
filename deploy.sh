@@ -90,5 +90,5 @@ echo
 echo "access argocd dashboard:"
 echo "kubectl port-forward svc/argocd-server -n argocd 9999:443 --context ${mgmt_context}"
 echo
-echo "navigate to cluster1 non-active directory for more examples that you can apply"
-echo "cd environments/cluster1/mesh-config/non-active"
+echo "navigate to demo directory for more examples that you can apply"
+echo "cd demo/v2-workshop/domain/wildcard/"
