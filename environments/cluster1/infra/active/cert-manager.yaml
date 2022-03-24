@@ -13,9 +13,6 @@ spec:
     chart: cert-manager
     helm:
       skipCrds: true
-      parameters:
-        - name: installCRDs
-          value: 'false'
   project: default
   syncPolicy:
     automated:
@@ -27,5 +24,3 @@ spec:
         duration: 5s
         maxDuration: 3m0s
         factor: 2
-    syncOptions:
-      - CreateNamespace=true
