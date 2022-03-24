@@ -12,6 +12,7 @@ spec:
     targetRevision: v1.7.2
     chart: cert-manager
     helm:
+      skipCrds: true
       parameters:
         - name: installCRDs
           value: 'false'
