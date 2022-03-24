@@ -1,0 +1,7 @@
+kind: ClusterIssuer
+metadata:
+  name: ca-issuer
+  namespace: cert-manager
+spec:
+  ca:
+    secretName: cert-manager-cacerts
