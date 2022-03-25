@@ -32,7 +32,7 @@ kubectl apply -f platform-owners/cluster1/cluster1-infra.yaml --context ${cluste
 kubectl apply -f platform-owners/cluster1/cluster1-apps.yaml --context ${cluster1_context}
 
 # wait for completion of bookinfo install
-./tools/wait-for-rollout.sh deployment productpage-v1 default 10 ${cluster1_context}
+#./tools/wait-for-rollout.sh deployment productpage-v1 default 10 ${cluster1_context}
 
 # deploy cluster1 mesh config aoa
 kubectl apply -f platform-owners/cluster1/cluster1-mesh-config.yaml --context ${cluster1_context}
