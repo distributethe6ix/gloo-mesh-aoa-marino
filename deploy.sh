@@ -29,7 +29,7 @@ kubectl apply -f platform-owners/cluster1/cluster1-infra.yaml --context ${cluste
 ./tools/wait-for-rollout.sh deployment istiod istio-system 10 ${cluster1_context}
 
 # deploy cluster1 environment apps aoa
-kubectl apply -f platform-owners/cluster1/cluster1-apps.yaml --context ${cluster1_context}
+#kubectl apply -f platform-owners/cluster1/cluster1-apps.yaml --context ${cluster1_context}
 
 # wait for completion of bookinfo install
 #./tools/wait-for-rollout.sh deployment productpage-v1 default 10 ${cluster1_context}
