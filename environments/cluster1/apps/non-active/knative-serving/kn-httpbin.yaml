@@ -1,0 +1,33 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: httpbin
+  namespace: in-mesh
+spec:
+    template:
+      metadata:
+        annotations:
+          client.knative.dev/user-image: docker.io/kennethreitz/httpbin
+        creationTimestamp: null
+        name: httpbin-httpbin
+      spec:
+        containerConcurrency: 0
+        containers:
+        - env:
+          - name: TARGET
+            value: httpbin
+          image: docker.io/kennethreitz/httpbin
+          name: user-container
+          ports:
+          - containerPort: 80
+            protocol: TCP
+          readinessProbe:
+            successThreshold: 1
+            tcpSocket:
+              port: 0
+          resources: {}
+        enableServiceLinks: false
+        timeoutSeconds: 300
+    traffic:
+    - latestRevision: true
+      percent: 100
