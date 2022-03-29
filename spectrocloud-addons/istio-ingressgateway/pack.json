@@ -1,0 +1,19 @@
+{
+    "addonType": "service-mesh",
+    "annotations": {
+    },
+    "ansibleRoles": [
+    ],
+    "cloudTypes": ["all"],
+    "displayName": "istio-ingressgateway-1.11.7",
+    "eol": " ",
+    "group": " ",
+    "kubeManifests": [
+    ],
+    "charts": [
+        "charts/istio-1.11.7-linux-amd64.tar.gz"
+    ],
+    "layer":"addon",
+    "name": "istio-ingressgateway-1.11.7",
+    "version": "1.11.7"
+}

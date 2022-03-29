@@ -1,0 +1,44 @@
+pack:
+  #The namespace (on the target cluster) to install this chart
+  #When not found, a new namespace will be created
+  namespace: "istio-system"
+
+charts:
+  istiod:
+    revision: 1-11
+    global:
+      meshID: mesh1
+      multiCluster:
+        clusterName: ehc-cluster1
+      network: network1
+    #  defaultResources:
+    #    requests:
+    #      cpu: 10m
+    #      memory: 128Mi
+    #    limits:
+    #      cpu: 100m
+    #      memory: 128Mi
+    meshConfig:
+      trustDomain: ehc-cluster1
+      accessLogFile: /dev/stdout
+      enableAutoMtls: true
+      defaultConfig:
+        envoyMetricsService:
+          address: gloo-mesh-agent.gloo-mesh:9977
+        envoyAccessLogService:
+          address: gloo-mesh-agent.gloo-mesh:9977
+        proxyMetadata:
+          ISTIO_META_DNS_CAPTURE: "true"
+          ISTIO_META_DNS_AUTO_ALLOCATE: "true"
+          GLOO_MESH_CLUSTER_NAME: gehc-cluster1
+    pilot:
+      # Resources for a small pilot install
+      resources:
+        requests:
+          cpu: 500m
+          memory: 2048Mi
+        limits:
+          cpu: 100m
+          memory: 128Mi
+      env:
+        PILOT_SKIP_VALIDATE_TRUST_DOMAIN: "true"

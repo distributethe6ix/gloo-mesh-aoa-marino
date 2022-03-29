@@ -1,0 +1,39 @@
+pack:
+  #The namespace (on the target cluster) to install this chart
+  #When not found, a new namespace will be created
+  namespace: "istio-gateways"
+
+charts:
+  # check if this is right
+  istio-ingress:
+    gateways:
+      istio-ingressgateway:
+        name: istio-ingressgateway
+        namespace: istio-gateways
+        labels:
+          istio: ingressgateway
+          topology.istio.io/network: network1
+        injectionTemplate: gateway
+        ports:
+        - name: http2
+          port: 80
+          targetPort: 8080
+        - name: https
+          port: 443
+          targetPort: 8443
+        - name: tcp-status-port
+          port: 15021
+          targetPort: 15021
+        - name: tls
+          port: 15443
+          targetPort: 15443
+        - name: tcp-istiod
+          port: 15012
+          targetPort: 15012
+        - name: tcp-webhook
+          port: 15017
+          targetPort: 15017
+        env:
+          ISTIO_META_ROUTER_MODE: "sni-dnat"
+          ISTIO_META_REQUESTED_NETWORK_VIEW: "network1"
+        

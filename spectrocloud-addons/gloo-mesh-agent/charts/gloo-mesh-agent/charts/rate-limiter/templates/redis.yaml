@@ -1,0 +1,59 @@
+{{- if .Values.redis.enabled }}
+  
+{{- $image := .Values.redis.image }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: rate-limiter
+  {{- include "rate-limiter.extraLabels" . | nindent 4 }}
+  name: redis
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rate-limiter
+      rate-limiter: redis
+  template:
+    metadata:
+      labels:
+        app: rate-limiter
+        rate-limiter: redis
+    spec:
+      containers:
+      - image: {{ printf "%v/%v:%v" $image.registry $image.repository $image.tag | quote }}
+        imagePullPolicy:  {{ $image.pullPolicy }}
+        name: redis
+        ports:
+        - containerPort: {{ .Values.redis.service.port }}
+        env:
+        - name: MASTER
+          value: "true"
+        volumeMounts:
+        - mountPath: /redis-master-data
+          name: data
+      volumes:
+      - name: data
+        emptyDir: {}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: rate-limiter
+  {{- include "rate-limiter.extraLabels" . | nindent 4 }}
+  name: {{ .Values.redis.service.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  ports:
+  - name: redis
+    port: {{ .Values.redis.service.port }}
+    protocol: TCP
+  selector:
+    app: rate-limiter
+    rate-limiter: redis
+
+{{- end }}
