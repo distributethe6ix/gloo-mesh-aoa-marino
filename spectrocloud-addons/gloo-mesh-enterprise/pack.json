@@ -1,5 +1,5 @@
 {
-    "addonType": "service-mesh",
+    "addonType": "ingress",
     "annotations": {
     },
     "ansibleRoles": [
