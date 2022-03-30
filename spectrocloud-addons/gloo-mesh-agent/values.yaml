@@ -5,47 +5,48 @@ pack:
 
 
 charts:
-  cluster: gehc-cluster1
-  relay:
-    authority: gloo-mesh-mgmt-server.gloo-mesh
-    clientTlsSecret:
-      name: relay-client-tls-secret
-    rootTlsSecret:
-      name: relay-root-tls-secret
-    # need to parameterize the input below
-    serverAddress: "${SVC}:9900"
-    tokenSecret:
-      key: token
-      name: relay-identity-token-secret
-      namespace: "gloo-mesh"
-  rate-limiter:
-    enabled: false
-  ext-auth-service:
-    enabled: false
-
-  glooMeshAgent:
-    enabled: true
-    env:
-    - name: POD_NAMESPACE
-      valueFrom:
-        fieldRef:
-          fieldPath: metadata.namespace
-    floatingUserId: false
-    image:
-      pullPolicy: IfNotPresent
-      registry: gcr.io/gloo-mesh
-      repository: gloo-mesh-agent
-      tag: 2.0.0-beta19
-    ports:
-      grpc: 9977
-      stats: 9091
-    resources:
-      limits:
-        cpu: 100m
-        memory: 256Mi
-      requests:
-        cpu: 50m
-        memory: 128Mi
-    runAsUser: 10101
-    serviceType: ClusterIP
-    sidecars: {}
+  gloo-mesh-agent:
+    cluster: gehc-cluster1
+    relay:
+      authority: gloo-mesh-mgmt-server.gloo-mesh
+      clientTlsSecret:
+        name: relay-client-tls-secret
+      rootTlsSecret:
+        name: relay-root-tls-secret
+      # need to parameterize the input below
+      serverAddress: "${SVC}:9900"
+      tokenSecret:
+        key: token
+        name: relay-identity-token-secret
+        namespace: "gloo-mesh"
+    rate-limiter:
+      enabled: false
+    ext-auth-service:
+      enabled: false
+  
+    glooMeshAgent:
+      enabled: true
+      env:
+      - name: POD_NAMESPACE
+        valueFrom:
+          fieldRef:
+            fieldPath: metadata.namespace
+      floatingUserId: false
+      image:
+        pullPolicy: IfNotPresent
+        registry: gcr.io/gloo-mesh
+        repository: gloo-mesh-agent
+        tag: 2.0.0-beta19
+      ports:
+        grpc: 9977
+        stats: 9091
+      resources:
+        limits:
+          cpu: 100m
+          memory: 256Mi
+        requests:
+          cpu: 50m
+          memory: 128Mi
+      runAsUser: 10101
+      serviceType: ClusterIP
+      sidecars: {}
