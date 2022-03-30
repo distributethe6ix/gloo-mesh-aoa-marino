@@ -1,1 +1,0 @@
-helm pull gloo-mesh-agent/gloo-mesh-agent --version 2.0.0-beta19

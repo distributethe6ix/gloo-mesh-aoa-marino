@@ -1,30 +1,37 @@
-gateways:
-  istio-ingressgateway:
-    name: istio-ingressgateway
-    namespace: istio-gateways
-    labels:
-      istio: ingressgateway
-      topology.istio.io/network: network1
-    injectionTemplate: gateway
-    ports:
-    - name: http2
-      port: 80
-      targetPort: 8080
-    - name: https
-      port: 443
-      targetPort: 8443
-    - name: tcp-status-port
-      port: 15021
-      targetPort: 15021
-    - name: tls
-      port: 15443
-      targetPort: 15443
-    - name: tcp-istiod
-      port: 15012
-      targetPort: 15012
-    - name: tcp-webhook
-      port: 15017
-      targetPort: 15017
-    env:
-      ISTIO_META_ROUTER_MODE: "sni-dnat"
-      ISTIO_META_REQUESTED_NETWORK_VIEW: "network1"
+revision: 1-11
+global:
+  meshID: mesh1
+  multiCluster:
+    clusterName: ehc-cluster1
+  network: network1
+#  defaultResources:
+#    requests:
+#      cpu: 10m
+#      memory: 128Mi
+#    limits:
+#      cpu: 100m
+#      memory: 128Mi
+meshConfig:
+  trustDomain: ehc-cluster1
+  accessLogFile: /dev/stdout
+  enableAutoMtls: true
+  defaultConfig:
+    envoyMetricsService:
+      address: gloo-mesh-agent.gloo-mesh:9977
+    envoyAccessLogService:
+      address: gloo-mesh-agent.gloo-mesh:9977
+    proxyMetadata:
+      ISTIO_META_DNS_CAPTURE: "true"
+      ISTIO_META_DNS_AUTO_ALLOCATE: "true"
+      GLOO_MESH_CLUSTER_NAME: gehc-cluster1
+pilot:
+  # Resources for a small pilot install
+  resources:
+    requests:
+      cpu: 500m
+      memory: 2048Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
+  env:
+    PILOT_SKIP_VALIDATE_TRUST_DOMAIN: "true"

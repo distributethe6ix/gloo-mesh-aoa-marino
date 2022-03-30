@@ -5,39 +5,60 @@ pack:
 
 
 charts:
-  gloo-mesh-enterprise:
-    licenseKey: "eyJhZGRPbnMiOiIiLCJleHAiOjE2NTEwMTc2MDAsImlhdCI6MTY0ODQyNTYwMCwiayI6IkhBdUhEZyIsImx0IjoidHJpYWwiLCJwcm9kdWN0IjoiZ2xvbyJ9.XipTDOmvJSmstbKPCJbbnTSLPP2oPQq709GDYT6uOAA"
-    mgmtClusterName: gehc-mgmt
-    glooMeshMgmtServer:
+  licenseKey: "eyJhZGRPbnMiOiIiLCJleHAiOjE2NTEwMTc2MDAsImlhdCI6MTY0ODQyNTYwMCwiayI6IkhBdUhEZyIsImx0IjoidHJpYWwiLCJwcm9kdWN0IjoiZ2xvbyJ9.XipTDOmvJSmstbKPCJbbnTSLPP2oPQq709GDYT6uOAA"
+  mgmtClusterName: gehc-mgmt
+  glooMeshMgmtServer:
+  resources:
+    requests:
+      cpu: 125m
+      memory: 256Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+  ports:
+    healthcheck: 8091
+    grpc: 9900
+  serviceType: LoadBalancer
+  # Additional settings to add to the load balancer service
+  #  serviceOverrides:
+  #    metadata:
+  #      annotations:
+  #        # AWS-specific annotations
+  #        service.beta.kubernetes.io/aws-load-balancer-healthcheck-healthy-threshold: "2"
+  #        service.beta.kubernetes.io/aws-load-balancer-healthcheck-unhealthy-threshold: "2"
+  #        service.beta.kubernetes.io/aws-load-balancer-healthcheck-interval: "10"
+  #        service.beta.kubernetes.io/aws-load-balancer-healthcheck-port: "9900"
+  #        service.beta.kubernetes.io/aws-load-balancer-healthcheck-protocol: "tcp"
+  #        service.beta.kubernetes.io/aws-load-balancer-type: external
+  #        service.beta.kubernetes.io/aws-load-balancer-scheme: internal
+  #        service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
+  #        service.beta.kubernetes.io/aws-load-balancer-backend-protocol: TCP
+  #        service.beta.kubernetes.io/aws-load-balancer-private-ipv4-addresses: 10.0.50.50, 10.0.64.50
+  #        service.beta.kubernetes.io/aws-load-balancer-subnets: subnet-0478784f04c486de5, subnet-09d0cf74c0117fcf3
+  #        service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: deregistration_delay.connection_termination.enabled=true,deregistration_delay.timeout_seconds=1
+  glooMeshUi:
     resources:
       requests:
         cpu: 125m
         memory: 256Mi
       limits:
-        cpu: 1000m
-        memory: 1Gi
-    ports:
-      healthcheck: 8091
-      grpc: 9900
-    serviceType: LoadBalancer
-    # Additional settings to add to the load balancer service
-    #  serviceOverrides:
-    #    metadata:
-    #      annotations:
-    #        # AWS-specific annotations
-    #        service.beta.kubernetes.io/aws-load-balancer-healthcheck-healthy-threshold: "2"
-    #        service.beta.kubernetes.io/aws-load-balancer-healthcheck-unhealthy-threshold: "2"
-    #        service.beta.kubernetes.io/aws-load-balancer-healthcheck-interval: "10"
-    #        service.beta.kubernetes.io/aws-load-balancer-healthcheck-port: "9900"
-    #        service.beta.kubernetes.io/aws-load-balancer-healthcheck-protocol: "tcp"
-    #        service.beta.kubernetes.io/aws-load-balancer-type: external
-    #        service.beta.kubernetes.io/aws-load-balancer-scheme: internal
-    #        service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
-    #        service.beta.kubernetes.io/aws-load-balancer-backend-protocol: TCP
-    #        service.beta.kubernetes.io/aws-load-balancer-private-ipv4-addresses: 10.0.50.50, 10.0.64.50
-    #        service.beta.kubernetes.io/aws-load-balancer-subnets: subnet-0478784f04c486de5, subnet-09d0cf74c0117fcf3
-    #        service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: deregistration_delay.connection_termination.enabled=true,deregistration_delay.timeout_seconds=1
-    glooMeshUi:
+        cpu: 500m
+        memory: 512G  
+  rbac-webhook:
+    enabled: false
+  
+  glooMeshRedis:
+    resources:
+      requests:
+        cpu: 125m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Gi
+  
+  prometheus:
+    enabled: true
+    server: 
       resources:
         requests:
           cpu: 125m
@@ -45,26 +66,3 @@ charts:
         limits:
           cpu: 500m
           memory: 512Gi
-
-    rbac-webhook:
-      enabled: false
-    
-    glooMeshRedis:
-      resources:
-        requests:
-          cpu: 125m
-          memory: 256Mi
-        limits:
-          cpu: 500m
-          memory: 512Gi
-    
-    prometheus:
-      enabled: true
-      server: 
-        resources:
-          requests:
-            cpu: 125m
-            memory: 256Mi
-          limits:
-            cpu: 500m
-            memory: 512Gi

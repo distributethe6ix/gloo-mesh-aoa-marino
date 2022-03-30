@@ -1,1 +1,1 @@
-helm template "istio-ingress" istio/istio-ingress -f values.yaml -n istio-system > istio-1.11.7-out.yaml
+helm template istio/gateway -n istio-system --version 1.12.5 > istio-ig-1.12.5-out.yaml
