@@ -3,13 +3,10 @@ gloo mesh helm install:
 helm repo add gloo-mesh-enterprise https://storage.googleapis.com/gloo-mesh-enterprise/gloo-mesh-enterprise 
 helm repo update
 kubectl create ns gloo-mesh 
-helm upgrade --install gloo-mesh-enterprise gloo-mesh-enterprise/gloo-mesh-enterprise \
+helm upgrade --install gloo-mesh-enterprise gloo-mesh-enterprise/gloo-mesh-enterprise -f values.yaml \
 --namespace gloo-mesh \
---version=2.0.0-beta19 \
---set glooMeshMgmtServer.ports.healthcheck=8091 \
---set glooMeshUi.serviceType=LoadBalancer \
---set mgmtClusterName=${MGMT} \
---set licenseKey=${LICENSE_KEY}
+--version=2.0.0-beta19
+
 kubectl -n gloo-mesh rollout status deploy/gloo-mesh-mgmt-server
 ```
 
@@ -79,8 +76,11 @@ prometheus:
         memory: 512Gi
 ```
 
-istiod helm values:
+istiod install:
 ```
+helm upgrade --install istio-base ./istio-1.11.7/manifests/charts/base -n istio-system
+
+helm upgrade --install istio-1.11.7 ./istio-1.11.7/manifests/charts/istio-control/istio-discovery -n istio-system --values - <<EOF
 revision: 1-11
 global:
   meshID: mesh1
@@ -118,10 +118,15 @@ pilot:
       memory: 128Mi
   env:
     PILOT_SKIP_VALIDATE_TRUST_DOMAIN: "true"
+EOF
 ```
 
-istio-ingressgateway values:
+istio-ingressgateway install:
 ```
+kubectl label namespace istio-gateways istio.io/rev=1-11
+
+helm upgrade --install istio-ingressgateway ./istio-1.11.7/manifests/charts/gateways/istio-ingress -n istio-gateways --values - <<EOF
+
 gateways:
   istio-ingressgateway:
     name: istio-ingressgateway
@@ -152,6 +157,7 @@ gateways:
     env:
       ISTIO_META_ROUTER_MODE: "sni-dnat"
       ISTIO_META_REQUESTED_NETWORK_VIEW: "network1"
+EOF
 ```
 
 agent install:
@@ -213,4 +219,524 @@ helm upgrade --install gloo-mesh-agent gloo-mesh-agent/gloo-mesh-agent \
   --version 2.0.0-beta19
 ```
 
+Deploy bookinfo-frontends
+```
+kubectl create ns bookinfo-frontends
+kubectl label namespace bookinfo-frontends istio.io/rev=1-11 
 
+kubectl apply -n bookinfo-frontends -f - <<EOF
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    account: productpage
+  name: bookinfo-productpage
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: productpage
+    service: productpage
+    version: v1
+  name: productpage
+spec:
+  ports:
+  - name: http
+    port: 9080
+  selector:
+    app: productpage
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: productpage
+    version: v1
+  name: productpage-v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: productpage
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: productpage
+        version: v1
+    spec:
+      containers:
+      - env:
+        - name: DETAILS_HOSTNAME
+          value: details.bookinfo-backends.svc.cluster.local
+        - name: REVIEWS_HOSTNAME
+          value: reviews.bookinfo-backends.svc.cluster.local
+        image: docker.io/istio/examples-bookinfo-productpage-v1:1.16.2
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            memory: "32Mi"
+            cpu: "100m"
+          limits:
+            memory: "64Mi"
+            cpu: "200m"
+        name: productpage
+        ports:
+        - containerPort: 9080
+        securityContext:
+          runAsUser: 1000
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp
+      serviceAccountName: bookinfo-productpage
+      volumes:
+      - emptyDir: {}
+        name: tmp
+EOF
+```
+
+Deploy bookinfo-backends
+```
+kubectl create ns bookinfo-backends
+kubectl label namespace bookinfo-backends istio.io/rev=1-11 
+
+kubectl apply -n bookinfo-backends -f - <<EOF
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    account: details
+  name: bookinfo-details
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    account: ratings
+  name: bookinfo-ratings
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    account: reviews
+  name: bookinfo-reviews
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: details
+    service: details
+  name: details
+spec:
+  ports:
+  - name: http
+    port: 9080
+  selector:
+    app: details
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: ratings
+    service: ratings
+  name: ratings
+spec:
+  ports:
+  - name: http
+    port: 9080
+  selector:
+    app: ratings
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: reviews
+    service: reviews
+  name: reviews
+spec:
+  ports:
+  - name: http
+    port: 9080
+  selector:
+    app: reviews
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: details
+    version: v1
+  name: details-v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: details
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: details
+        version: v1
+    spec:
+      containers:
+      - image: docker.io/istio/examples-bookinfo-details-v1:1.16.2
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            memory: "32Mi"
+            cpu: "100m"
+          limits:
+            memory: "64Mi"
+            cpu: "200m"
+        name: details
+        ports:
+        - containerPort: 9080
+        securityContext:
+          runAsUser: 1000
+      serviceAccountName: bookinfo-details
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: ratings
+    version: v1
+  name: ratings-v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ratings
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: ratings
+        version: v1
+    spec:
+      containers:
+      - image: docker.io/istio/examples-bookinfo-ratings-v1:1.16.2
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            memory: "32Mi"
+            cpu: "100m"
+          limits:
+            memory: "64Mi"
+            cpu: "200m"
+        name: ratings
+        ports:
+        - containerPort: 9080
+        securityContext:
+          runAsUser: 1000
+      serviceAccountName: bookinfo-ratings
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: reviews
+    version: v1
+  name: reviews-v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: reviews
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: reviews
+        version: v1
+    spec:
+      containers:
+      - env:
+        - name: LOG_DIR
+          value: /tmp/logs
+        image: docker.io/istio/examples-bookinfo-reviews-v1:1.16.2
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"
+        name: reviews
+        ports:
+        - containerPort: 9080
+        securityContext:
+          runAsUser: 1000
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp
+        - mountPath: /opt/ibm/wlp/output
+          name: wlp-output
+      serviceAccountName: bookinfo-reviews
+      volumes:
+      - emptyDir: {}
+        name: wlp-output
+      - emptyDir: {}
+        name: tmp
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: reviews
+    version: v2
+  name: reviews-v2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: reviews
+      version: v2
+  template:
+    metadata:
+      labels:
+        app: reviews
+        version: v2
+    spec:
+      containers:
+      - env:
+        - name: LOG_DIR
+          value: /tmp/logs
+        image: docker.io/istio/examples-bookinfo-reviews-v2:1.16.2
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"
+        name: reviews
+        ports:
+        - containerPort: 9080
+        securityContext:
+          runAsUser: 1000
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp
+        - mountPath: /opt/ibm/wlp/output
+          name: wlp-output
+      serviceAccountName: bookinfo-reviews
+      volumes:
+      - emptyDir: {}
+        name: wlp-output
+      - emptyDir: {}
+        name: tmp
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: reviews
+    version: v3
+  name: reviews-v3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: reviews
+      version: v3
+  template:
+    metadata:
+      labels:
+        app: reviews
+        version: v3
+    spec:
+      containers:
+      - env:
+        - name: LOG_DIR
+          value: /tmp/logs
+        image: docker.io/istio/examples-bookinfo-reviews-v3:1.16.2
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"
+        name: reviews
+        ports:
+        - containerPort: 9080
+        securityContext:
+          runAsUser: 1000
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp
+        - mountPath: /opt/ibm/wlp/output
+          name: wlp-output
+      serviceAccountName: bookinfo-reviews
+      volumes:
+      - emptyDir: {}
+        name: wlp-output
+      - emptyDir: {}
+        name: tmp
+EOF
+```
+
+Deploy Addons on worker clusters
+```
+kubectl create namespace gloo-mesh-addons
+kubectl label namespace gloo-mesh-addons istio.io/rev=1-11
+
+helm upgrade --install gloo-mesh-agent-addons gloo-mesh-agent/gloo-mesh-agent \
+  --namespace gloo-mesh-addons \
+  --set glooMeshAgent.enabled=false \
+  --set rate-limiter.enabled=true \
+  --set ext-auth-service.enabled=true \
+  --version 2.0.0-beta19
+```
+
+# DEPLOY IN MGMT CLUSTER
+Create gateways workspace in the management cluster:
+```
+kubectl apply --context ${MGMT} -f- <<EOF
+apiVersion: admin.gloo.solo.io/v2
+kind: Workspace
+metadata:
+  name: gateways
+  namespace: gloo-mesh
+spec:
+  workloadClusters:
+  - name: cluster1
+    namespaces:
+    - name: istio-gateways
+    - name: gloo-mesh-addons
+  - name: cluster2
+    namespaces:
+    - name: istio-gateways
+    - name: gloo-mesh-addons
+EOF
+```
+
+Create bookinfo workspace in the management cluster:
+```
+kubectl apply --context ${MGMT} -f- <<EOF
+apiVersion: admin.gloo.solo.io/v2
+kind: Workspace
+metadata:
+  name: bookinfo
+  namespace: gloo-mesh
+  labels:
+    allow_ingress: "true"
+spec:
+  workloadClusters:
+  - name: cluster1
+    namespaces:
+    - name: bookinfo-frontends
+    - name: bookinfo-backends
+  - name: cluster2
+    namespaces:
+    - name: bookinfo-frontends
+    - name: bookinfo-backends
+EOF
+```
+
+# DEPLOY IN CLUSTER1 CLUSTER
+
+Set cluster1 `istio-gateways` namespace as the root namespace where the gateway team will control objects they want to export
+```
+kubectl apply -f- <<EOF
+apiVersion: admin.gloo.solo.io/v2
+kind: WorkspaceSettings
+metadata:
+  name: gateways
+  namespace: istio-gateways
+spec:
+  imports:
+  - selector:
+      allow_ingress: "true"
+EOF
+```
+
+Set cluster1 `bookinfo-frontends` namespace as the root namespace where the bookinfo team will control objects they want to export
+```
+kubectl apply -f- <<EOF
+apiVersion: admin.gloo.solo.io/v2
+kind: WorkspaceSettings
+metadata:
+  name: bookinfo
+  namespace: bookinfo-frontends
+spec:
+  exportTo:
+  - name: gateways
+EOF
+```
+
+Expose productpage through a gateway
+```
+kubectl apply -f - <<EOF
+apiVersion: networking.gloo.solo.io/v2
+kind: VirtualGateway
+metadata:
+  name: north-south-gw
+  namespace: istio-gateways
+spec:
+  workloads:
+    - selector:
+        labels:
+          istio: ingressgateway
+        cluster: cluster1
+  listeners: 
+    - http: {}
+      port:
+        number: 80
+        name: http
+        protocol: HTTP
+      allowedRouteTables:
+        - host: '*'
+EOF
+```
+
+And then a route table:
+```
+kubectl apply -f - <<EOF
+apiVersion: networking.gloo.solo.io/v2
+kind: RouteTable
+metadata:
+  name: productpage
+  namespace: bookinfo-frontends
+  labels:
+    workspace.solo.io/exported: "true"
+spec:
+  hosts:
+    - '*'
+  virtualGateways:
+    - name: north-south-gw
+      namespace: istio-gateways
+      cluster: cluster1
+  workloadSelectors: []
+  http:
+    - name: productpage
+      matchers:
+      - uri:
+          exact: /productpage
+      - uri:
+          prefix: /static
+      - uri:
+          exact: /login
+      - uri:
+          exact: /logout
+      - uri:
+          prefix: /api/v1/products
+      forwardTo:
+        destinations:
+          - ref:
+              name: productpage
+              namespace: bookinfo-frontends
+            port:
+              number: 9080
+EOF
+```
