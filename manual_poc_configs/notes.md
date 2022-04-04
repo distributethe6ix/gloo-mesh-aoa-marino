@@ -85,7 +85,7 @@ revision: 1-11
 global:
   meshID: mesh1
   multiCluster:
-    clusterName: ehc-cluster1
+    clusterName: cluster1
   network: network1
 #  defaultResources:
 #    requests:
@@ -95,7 +95,7 @@ global:
 #      cpu: 100m
 #      memory: 128Mi
 meshConfig:
-  trustDomain: ehc-cluster1
+  trustDomain: cluster1
   accessLogFile: /dev/stdout
   enableAutoMtls: true
   defaultConfig:
@@ -106,7 +106,7 @@ meshConfig:
     proxyMetadata:
       ISTIO_META_DNS_CAPTURE: "true"
       ISTIO_META_DNS_AUTO_ALLOCATE: "true"
-      GLOO_MESH_CLUSTER_NAME: gehc-cluster1
+      GLOO_MESH_CLUSTER_NAME: cluster1
 pilot:
   # Resources for a small pilot install
   resources:
@@ -389,11 +389,11 @@ spec:
         imagePullPolicy: IfNotPresent
         resources:
           requests:
-            memory: "32Mi"
-            cpu: "100m"
-          limits:
             memory: "64Mi"
-            cpu: "200m"
+            cpu: "32m"
+          limits:
+            memory: "256Mi"
+            cpu: "64m"
         name: details
         ports:
         - containerPort: 9080
@@ -425,11 +425,11 @@ spec:
         imagePullPolicy: IfNotPresent
         resources:
           requests:
-            memory: "32Mi"
-            cpu: "100m"
-          limits:
             memory: "64Mi"
-            cpu: "200m"
+            cpu: "32m"
+          limits:
+            memory: "256Mi"
+            cpu: "64m"
         name: ratings
         ports:
         - containerPort: 9080
@@ -464,11 +464,11 @@ spec:
         imagePullPolicy: IfNotPresent
         resources:
           requests:
-            memory: "64Mi"
-            cpu: "100m"
-          limits:
             memory: "128Mi"
-            cpu: "200m"
+            cpu: "64m"
+          limits:
+            memory: "256Mi"
+            cpu: "128m"
         name: reviews
         ports:
         - containerPort: 9080
@@ -513,11 +513,11 @@ spec:
         imagePullPolicy: IfNotPresent
         resources:
           requests:
-            memory: "64Mi"
-            cpu: "100m"
-          limits:
             memory: "128Mi"
-            cpu: "200m"
+            cpu: "64m"
+          limits:
+            memory: "256Mi"
+            cpu: "128m"
         name: reviews
         ports:
         - containerPort: 9080
@@ -562,11 +562,11 @@ spec:
         imagePullPolicy: IfNotPresent
         resources:
           requests:
-            memory: "64Mi"
-            cpu: "100m"
-          limits:
             memory: "128Mi"
-            cpu: "200m"
+            cpu: "128m"
+          limits:
+            memory: "256Mi"
+            cpu: "256m"
         name: reviews
         ports:
         - containerPort: 9080
@@ -739,4 +739,504 @@ spec:
             port:
               number: 9080
 EOF
+```
+
+# test TLS
+
+Apply TLS secret:
+```
+kubectl apply -f tls-secret.yaml -n istio-gateways
+```
+
+Update VirtualGateway to use tls-secret:
+```
+kubectl apply -f - <<EOF
+apiVersion: networking.gloo.solo.io/v2
+kind: VirtualGateway
+metadata:
+  name: north-south-gw
+  namespace: istio-gateways
+spec:
+  workloads:
+    - selector:
+        labels:
+          istio: ingressgateway
+        cluster: cluster1
+  listeners: 
+    - http: {}
+# ---------------- SSL config ---------------------------
+      port:
+        number: 443
+        name: https
+        protocol: HTTPS
+      tls:
+        mode: SIMPLE
+        secretName: tls-secret
+# -------------------------------------------------------
+      allowedRouteTables:
+        - host: '*'
+EOF
+```
+
+# Traffic Policies (still cluster1)
+
+Set fixed delay to `fault_injection: true` label:
+```
+cat << EOF | kubectl apply -f -
+apiVersion: resilience.policy.gloo.solo.io/v2
+kind: FaultInjectionPolicy
+metadata:
+  name: ratings-fault-injection
+  namespace: bookinfo-backends
+spec:
+  applyToRoutes:
+  - route:
+      labels:
+        fault_injection: "true"
+  config:
+    delay:
+      fixedDelay: 2s
+      percentage: 100
+EOF
+```
+
+Now set `fault_injection: true` label on appropriate route table
+```
+cat << EOF | kubectl apply -f -
+apiVersion: networking.gloo.solo.io/v2
+kind: RouteTable
+metadata:
+  name: ratings
+  namespace: bookinfo-backends
+spec:
+  hosts:
+    - 'ratings.bookinfo-backends.svc.cluster.local'
+  workloadSelectors:
+  - selector:
+      labels:
+        app: reviews
+  http:
+    - name: ratings
+      labels:
+        fault_injection: "true"
+      matchers:
+      - uri:
+          prefix: /
+      forwardTo:
+        destinations:
+          - ref:
+              name: ratings
+              namespace: bookinfo-backends
+            port:
+              number: 9080
+EOF
+```
+
+Refresh the bookinfo app in-browser to observe 2 second delay when loading v2 reviews
+
+# configure request timeout
+Configure a timeout in conjunction to the delay that we imposed to observe behavior
+```
+cat << EOF | kubectl apply -f -
+apiVersion: resilience.policy.gloo.solo.io/v2
+kind: RetryTimeoutPolicy
+metadata:
+  name: reviews-request-timeout
+  namespace: bookinfo-backends
+spec:
+  applyToRoutes:
+  - route:
+      labels:
+        request_timeout: "0.5s"
+  config:
+    requestTimeout: 0.5s
+EOF
+```
+
+Update the reviews route table with the proper label to be selected
+```
+cat << EOF | kubectl apply -f -
+apiVersion: networking.gloo.solo.io/v2
+kind: RouteTable
+metadata:
+  name: reviews
+  namespace: bookinfo-backends
+spec:
+  hosts:
+    - 'reviews.bookinfo-backends.svc.cluster.local'
+  workloadSelectors:
+  - selector:
+      labels:
+        app: productpage
+  http:
+    - name: reviews
+      labels:
+        request_timeout: "0.5s"
+      matchers:
+      - uri:
+          prefix: /
+      forwardTo:
+        destinations:
+          - ref:
+              name: reviews
+              namespace: bookinfo-backends
+            port:
+              number: 9080
+            subset:
+              version: v2
+EOF
+```
+
+Remove config:
+```
+kubectl delete faultinjectionpolicy -n bookinfo-backends ratings-fault-injection
+kubectl delete retrytimeoutpolicy reviews-request-timeout -n bookinfo-backends
+kubectl delete routetable -n bookinfo-backends reviews 
+kubectl delete routetable -n bookinfo-backends ratings
+```
+
+# Create Root Trust Policy - IN MGMT CLUSTER
+```
+cat << EOF | kubectl apply -f -
+apiVersion: admin.gloo.solo.io/v2
+kind: RootTrustPolicy
+metadata:
+  name: root-trust-policy
+  namespace: gloo-mesh
+spec:
+  config:
+    mgmtServerCa:
+      generated: {}
+    autoRestartPods: true
+EOF
+```
+
+Check to see that the secret in cluster1 and cluster2 have the same Root CA but different intermediate certs
+```
+kubectl get secret -n istio-system cacerts -o yaml --context ${CLUSTER1}
+kubectl get secret -n istio-system cacerts -o yaml --context ${CLUSTER2}
+```
+
+# Multi Cluster Traffic - Deploy on Cluster 1 (where workspace root is)
+```
+cat << EOF | kubectl apply -f -
+apiVersion: admin.gloo.solo.io/v2
+kind: WorkspaceSettings
+metadata:
+  name: bookinfo
+  namespace: bookinfo-frontends
+spec:
+  exportTo:
+  - name: gateways
+  options:
+    federation:
+      enabled: true
+      serviceSelector:
+      - workspace: bookinfo
+        labels:
+          app: reviews
+EOF
+```
+
+Modify route table to send all traffic to v3 reviews on cluster2 to validate
+```
+cat << EOF | kubectl apply -f -
+apiVersion: networking.gloo.solo.io/v2
+kind: RouteTable
+metadata:
+  name: reviews
+  namespace: bookinfo-backends
+spec:
+  hosts:
+    - 'reviews.bookinfo-backends.svc.cluster.local'
+  workloadSelectors:
+  - selector:
+      labels:
+        app: productpage
+  http:
+    - name: reviews
+      matchers:
+      - uri:
+          prefix: /
+      forwardTo:
+        destinations:
+          - ref:
+              name: reviews
+              namespace: bookinfo-backends
+              cluster: cluster2
+            port:
+              number: 9080
+            subset:
+              version: v3
+EOF
+```
+
+Remove test route table once completed with validation:
+```
+kubectl delete routetables reviews -n bookinfo-backends
+```
+
+# Leverage Virtual Destinations
+Update VirtualGateway with a selector instead of directref to expose on both clusters
+```
+kubectl apply -f - <<EOF
+apiVersion: networking.gloo.solo.io/v2
+kind: VirtualGateway
+metadata:
+  name: north-south-gw
+  namespace: istio-gateways
+spec:
+  workloads:
+    - selector:
+        labels:
+          istio: ingressgateway
+  listeners: 
+    - http: {}
+      port:
+        number: 443
+        name: https
+        protocol: HTTPS
+      tls:
+        mode: SIMPLE
+        secretName: tls-secret
+      allowedRouteTables:
+        - host: '*'
+EOF
+```
+
+Now you can check the istio-ingressgateway at cluster 2
+```
+kubectl get svc -n istio-gateways --context ${CLUSTER2}
+```
+
+Create a Virtual Destination:
+```
+kubectl apply -f - <<EOF
+apiVersion: networking.gloo.solo.io/v2
+kind: VirtualDestination
+metadata:
+  name: productpage
+  namespace: bookinfo-frontends
+  labels:
+    workspace.solo.io/exported: "true"
+spec:
+  hosts:
+  - productpage.global
+  services:
+  - namespace: bookinfo-frontends
+    labels:
+      app: productpage
+  ports:
+    - name: http
+      number: 9080
+      protocol: HTTP
+EOF
+```
+
+Now update your Route Table to use this virtual destination:
+```
+kubectl apply -f - <<EOF
+apiVersion: networking.gloo.solo.io/v2
+kind: RouteTable
+metadata:
+  name: productpage
+  namespace: bookinfo-frontends
+  labels:
+    workspace.solo.io/exported: "true"
+spec:
+  hosts:
+    - '*'
+  virtualGateways:
+    - name: north-south-gw
+      namespace: istio-gateways
+      cluster: cluster1
+  workloadSelectors: []
+  http:
+    - name: productpage
+      matchers:
+      - uri:
+          exact: /productpage
+      - uri:
+          prefix: /static
+      - uri:
+          exact: /login
+      - uri:
+          exact: /logout
+      - uri:
+          prefix: /api/v1/products
+      forwardTo:
+        destinations:
+          - ref:
+              name: productpage
+              namespace: bookinfo-frontends
+            kind: VIRTUAL_DESTINATION
+            port:
+              number: 9080
+EOF
+```
+
+Now test both bookinfo examples and you will see that in cluster1 there will be red stars, even though there is no reviews-v3 service in cluster1
+
+# Implement failover and locality rules
+
+Set failover policy:
+```
+kubectl apply -f - <<EOF
+apiVersion: resilience.policy.gloo.solo.io/v2
+kind: FailoverPolicy
+metadata:
+  name: failover
+  namespace: bookinfo-frontends
+  labels:
+    workspace.solo.io/exported: "true"
+spec:
+  applyToDestinations:
+  - kind: VIRTUAL_DESTINATION
+    selector:
+      labels:
+        failover: "true"
+  config:
+    localityMappings: []
+EOF
+```
+
+Set an outlier detection policy:
+```
+kubectl apply -f - <<EOF
+apiVersion: resilience.policy.gloo.solo.io/v2
+kind: OutlierDetectionPolicy
+metadata:
+  name: outlier-detection
+  namespace: bookinfo-frontends
+  labels:
+    workspace.solo.io/exported: "true"
+spec:
+  applyToDestinations:
+  - kind: VIRTUAL_DESTINATION
+    selector:
+      labels:
+        failover: "true"
+  config:
+    consecutiveErrors: 2
+    interval: 5s
+    baseEjectionTime: 30s
+    maxEjectionPercent: 100
+EOF
+```
+
+# deploy httpbin in-mesh and not-in-mesh for tests
+
+First deploy the not-in-mesh:
+```
+kubectl create ns httpbin
+
+kubectl apply -n httpbin -f - <<EOF
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: not-in-mesh
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: not-in-mesh
+  labels:
+    app: not-in-mesh
+    service: not-in-mesh
+spec:
+  ports:
+  - name: http
+    port: 8000
+    targetPort: 80
+  selector:
+    app: not-in-mesh
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: not-in-mesh
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: not-in-mesh
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: not-in-mesh
+        version: v1
+    spec:
+      serviceAccountName: not-in-mesh
+      containers:
+      - image: docker.io/kennethreitz/httpbin
+        imagePullPolicy: IfNotPresent
+        name: not-in-mesh
+        ports:
+        - containerPort: 80
+EOF
+```
+
+Then the in-mesh (with annotation):
+```
+kubectl apply -n httpbin -f - <<EOF
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: in-mesh
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: in-mesh
+  labels:
+    app: in-mesh
+    service: in-mesh
+spec:
+  ports:
+  - name: http
+    port: 8000
+    targetPort: 80
+  selector:
+    app: in-mesh
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: in-mesh
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: in-mesh
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: in-mesh
+        version: v1
+        istio.io/rev: 1-11
+    spec:
+      serviceAccountName: in-mesh
+      containers:
+      - image: docker.io/kennethreitz/httpbin
+        imagePullPolicy: IfNotPresent
+        name: in-mesh
+        ports:
+        - containerPort: 80
+EOF
+```
+
+Command to test - note this requires curl containers and ephemeral containers to be supported in the cluster
+
+Service not-in-mesh > in-mesh
+```
+pod=$(kubectl -n httpbin get pods -l app=not-in-mesh -o jsonpath='{.items[0].metadata.name}')
+kubectl -n httpbin debug -i -q ${pod} --image=curlimages/curl -- curl -s -o /dev/null -w "%{http_code}" http://reviews.bookinfo-backends.svc.cluster.local:9080/reviews/0
+```
+
+in-mesh > in-mesh
+```
+pod=$(kubectl -n httpbin get pods -l app=in-mesh -o jsonpath='{.items[0].metadata.name}')
+kubectl -n httpbin debug -i -q ${pod} --image=curlimages/curl -- curl -s -o /dev/null -w "%{http_code}" http://reviews.bookinfo-backends.svc.cluster.local:9080/reviews/0
 ```
