@@ -1240,3 +1240,8 @@ in-mesh > in-mesh
 pod=$(kubectl -n httpbin get pods -l app=in-mesh -o jsonpath='{.items[0].metadata.name}')
 kubectl -n httpbin debug -i -q ${pod} --image=curlimages/curl -- curl -s -o /dev/null -w "%{http_code}" http://reviews.bookinfo-backends.svc.cluster.local:9080/reviews/0
 ```
+
+RL cmd:
+```
+for i in {1..5}; do curl -I -H "x-type: a" -H "x-number: one" -sk https://k8s-istiogat-istioing-312f9b356d-224313aa2070d861.elb.us-east-1.amazonaws.com/productpage;echo ''; done
+```
