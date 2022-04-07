@@ -114,8 +114,8 @@ pilot:
       cpu: 500m
       memory: 2048Mi
     limits:
-      cpu: 100m
-      memory: 128Mi
+      cpu: 500m
+      memory: 2048Mi
   env:
     PILOT_SKIP_VALIDATE_TRUST_DOMAIN: "true"
 EOF
