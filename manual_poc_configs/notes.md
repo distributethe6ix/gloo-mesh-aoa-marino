@@ -1245,3 +1245,38 @@ RL cmd:
 ```
 for i in {1..5}; do curl -I -H "x-type: a" -H "x-number: one" -sk https://k8s-istiogat-istioing-312f9b356d-224313aa2070d861.elb.us-east-1.amazonaws.com/productpage;echo ''; done
 ```
+
+# Solo Workshop Link
+https://workshops.solo.io/gloo-workshops/gloo-mesh-2-0#lab-6
+- GEHC Lab clusters have been set up to Lab 6
+    - Clusters deployed on solo-poc-solcls1 (mgmt), solo-poc-solcls2 (cluster1), solo-poc-solcls3 (cluster2)
+    - Istio deployed on solo-poc-solcls2 and solo-poc-solcls3
+    - Bookinfo and httpbin demo applications deployed
+    - Gloo Mesh deployed and workers registered
+    - Workspaces created
+
+# Set these env variables if starting at Lab 6:
+```
+export MGMT=solo-poc-solcls1-user@solo-poc-solcls1
+export CLUSTER1=solo-poc-solcls2-user@solo-poc-solcls2
+export CLUSTER2=solo-poc-solcls3-user@solo-poc-solcls3
+```
+
+# Set these endpoint env variables if starting at Lab 6:
+```
+export ENDPOINT_HTTP_GW_CLUSTER1=$(kubectl --context ${CLUSTER1} -n istio-gateways get svc istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].*}'):80
+export ENDPOINT_HTTPS_GW_CLUSTER1=$(kubectl --context ${CLUSTER1} -n istio-gateways get svc istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].*}'):443
+export HOST_GW_CLUSTER1=$(echo ${ENDPOINT_HTTP_GW_CLUSTER1} | cut -d: -f1)
+
+export ENDPOINT_HTTP_GW_CLUSTER2=$(kubectl --context ${CLUSTER2} -n istio-gateways get svc istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].*}'):80
+export ENDPOINT_HTTPS_GW_CLUSTER2=$(kubectl --context ${CLUSTER2} -n istio-gateways get svc istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].*}'):443
+export HOST_GW_CLUSTER1=$(echo ${ENDPOINT_HTTP_GW_CLUSTER2} | cut -d: -f1)
+```
+
+# expose gloo mesh ui using port-forward at localhost:8090
+```
+kubectl port-forward -n gloo-mesh svc/gloo-mesh-ui 8090 --context ${MGMT}
+```
+
+## Other Notes:
+Lab 13 (Keycloak) and Lab 14 (OPA + Keycloak) have been validated on Solo.io environments but has not been completed/tested on GEHC cluster. Was unsure if GEHC uses keycloak internally.
