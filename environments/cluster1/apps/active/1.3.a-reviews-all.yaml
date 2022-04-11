@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: bookinfo-default-istio-rollout
+  name: bookinfo-default-istio
   namespace: argocd
   finalizers:
   - resources-finalizer.argocd.argoproj.io
@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: https://github.com/solo-io/gitops-library
     targetRevision: HEAD
-    path: bookinfo/overlay/app/istio-rollout/
+    path: bookinfo/overlay/app/1.3.a-reviews-all/istio/
   destination:
     server: https://kubernetes.default.svc
     namespace: default
