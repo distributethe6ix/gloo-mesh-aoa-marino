@@ -27,7 +27,7 @@ spec:
         - name: enterprise-networking.prometheus.server.securityContext
           value: 'false'
         - name: licenseKey
-          value: 'eyJleHAiOjE2NDYzMzkxMTEsImlhdCI6MTY0NTEyOTUxMSwiayI6InhLRkp4USIsImx0IjoidHJpYWwiLCJwcm9kdWN0IjoiZ2xvbyJ9.NvWwhZ7ReXeF3ZOxv-yMP1nWPhknVycIEOjKys-UfNg'
+          value: 'eyJleHAiOjE2NTMwODQwMzcsImlhdCI6MTY0OTk3MzYzNywiayI6IjYzNnNIUSIsImx0IjoidHJpYWwiLCJwcm9kdWN0IjoiZ2xvbyJ9.m6WgqDq10JloZgBmyIP7PBqprbOHvY5kcUaesPz81XU'
         - name: rbac-webhook.adminSubjects[0].kind
           value: 'User'
         - name: rbac-webhook.adminSubjects[0].name
