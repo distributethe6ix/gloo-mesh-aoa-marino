@@ -14,7 +14,7 @@ spec:
     chart: gloo-mesh-enterprise
     helm:
       values: |
-        licenseKey: eyJleHAiOjE2NDk5NDk2MjYsImlhdCI6MTY0ODQ4MDgyNiwiayI6InlwS0g4dyIsImx0IjoidHJpYWwiLCJwcm9kdWN0IjoiZ2xvbyJ9.uYk9tgMTs6eKSS77-u55bDQUF6X9FFXl6qx6zQWPGmQ
+        licenseKey: eyJleHAiOjE2NTMwODQwMzcsImlhdCI6MTY0OTk3MzYzNywiayI6IjYzNnNIUSIsImx0IjoidHJpYWwiLCJwcm9kdWN0IjoiZ2xvbyJ9.m6WgqDq10JloZgBmyIP7PBqprbOHvY5kcUaesPz81XU
     repoURL: https://storage.googleapis.com/gloo-mesh-enterprise/gloo-mesh-enterprise
     targetRevision: 2.0.0-beta19
   syncPolicy:
