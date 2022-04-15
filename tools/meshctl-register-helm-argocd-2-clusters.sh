@@ -30,7 +30,7 @@ kubectl apply --context ${mgmt_context} -f- <<EOF
 apiVersion: admin.gloo.solo.io/v2
 kind: KubernetesCluster
 metadata:
-  name: cluster1
+  name: cluster2
   namespace: gloo-mesh
   labels:
     env: test
