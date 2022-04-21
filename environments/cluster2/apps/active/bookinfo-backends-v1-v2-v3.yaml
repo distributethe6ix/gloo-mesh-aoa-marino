@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Namespace
 metadata:
   labels:
-    istio.io/rev: 1-11
+    istio.io/rev: 1-12
   name: bookinfo-backends
 ---
 apiVersion: argoproj.io/v1alpha1
