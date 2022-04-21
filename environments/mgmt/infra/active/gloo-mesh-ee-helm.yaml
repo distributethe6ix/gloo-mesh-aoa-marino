@@ -15,8 +15,12 @@ spec:
     helm:
       values: |
         licenseKey: eyJleHAiOjE2NTMwODQwMzcsImlhdCI6MTY0OTk3MzYzNywiayI6IjYzNnNIUSIsImx0IjoidHJpYWwiLCJwcm9kdWN0IjoiZ2xvbyJ9.m6WgqDq10JloZgBmyIP7PBqprbOHvY5kcUaesPz81XU
+        mgmtClusterName: mgmt
+        glooMeshMgmtServer:
+          ports:
+            healthcheck: 8091
     repoURL: https://storage.googleapis.com/gloo-mesh-enterprise/gloo-mesh-enterprise
-    targetRevision: 2.0.0-beta19
+    targetRevision: 2.0.0-beta31
   syncPolicy:
     automated:
       prune: true

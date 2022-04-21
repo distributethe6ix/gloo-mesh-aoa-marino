@@ -5,8 +5,8 @@ set -e
 cluster1_context="cluster1"
 cluster2_context="cluster2"
 mgmt_context="mgmt"
-gloo_mesh_version="2.0.0-beta19"
-revision="1-11"
+gloo_mesh_version="2.0.0-beta31"
+revision="1-12"
 
 # check to see if defined contexts exist
 if [[ $(kubectl config get-contexts | grep ${mgmt_context}) == "" ]] || [[ $(kubectl config get-contexts | grep ${cluster1_context}) == "" ]] || [[ $(kubectl config get-contexts | grep ${cluster2_context}) == "" ]]; then
@@ -33,26 +33,22 @@ kubectl apply -f platform-owners/cluster1/cluster1-cluster-config.yaml --context
 kubectl apply -f platform-owners/cluster2/cluster2-cluster-config.yaml --context ${cluster2_context}
 
 ############# fix this later ####################
-kubectl create ns istio-system --context ${cluster1_context}
-kubectl create ns istio-gateways --context ${cluster1_context}
-kubectl create ns istio-system --context ${cluster2_context}
-kubectl create ns istio-gateways --context ${cluster2_context}
 
-# manual step because order matters for operators?
-kubectl apply -f environments/cluster1/infra/active/istio-operator-${revision}-revisioned.yaml --context ${cluster1_context}
-kubectl apply -f environments/cluster2/infra/active/istio-operator-${revision}-revisioned.yaml --context ${cluster2_context}
+# manual step because order matters - istio-base must come before istiod
+kubectl apply -f environments/cluster1/infra/active/istio-base.yaml --context ${cluster1_context}
+kubectl apply -f environments/cluster2/infra/active/istio-base.yaml --context ${cluster2_context}
 
-# wait for completion of istio operator install
-./tools/wait-for-rollout.sh deployment istio-operator-${revision} istio-operator 10 ${cluster1_context}
-./tools/wait-for-rollout.sh deployment istio-operator-${revision} istio-operator 10 ${cluster2_context}
-
-# manual step because order matters for istiod vs istio ingress?
+# manual step because order matters - istiod must come before ingressgateway
 kubectl apply -f environments/cluster1/infra/active/istiod-${revision}.yaml --context ${cluster1_context}
 kubectl apply -f environments/cluster2/infra/active/istiod-${revision}.yaml --context ${cluster2_context}
 
-# wait for completion of istio install
+# wait for completion of istiod install
 ./tools/wait-for-rollout.sh deployment istiod-${revision} istio-system 10 ${cluster1_context}
 ./tools/wait-for-rollout.sh deployment istiod-${revision} istio-system 10 ${cluster2_context}
+
+# sleep 30
+echo sleeping for 30 seconds
+sleep 30
 
 ############# fix this later ####################
 
