@@ -8,7 +8,7 @@ metadata:
 spec:
   destination:
     server: https://kubernetes.default.svc
-    namespace: istio-system
+    namespace: istio-gateways
   project: default
   source:
     chart: gateway
