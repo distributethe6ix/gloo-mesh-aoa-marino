@@ -50,9 +50,10 @@ spec:
         # Labels to apply to all resources
         labels:
           istio.io/rev: 1-12
+          istio: ingressgateway
   syncPolicy:
     automated:
-      prune: true
+      prune: false
       selfHeal: false
     syncOptions:
     - RespectIgnoreDifferences=true

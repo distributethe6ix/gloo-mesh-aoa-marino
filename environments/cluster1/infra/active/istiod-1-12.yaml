@@ -43,7 +43,7 @@ spec:
             PILOT_SKIP_VALIDATE_TRUST_DOMAIN: "true"
   syncPolicy:
     automated:
-      prune: true
+      prune: false
       selfHeal: false
     syncOptions:
     - RespectIgnoreDifferences=true
