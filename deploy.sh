@@ -37,6 +37,7 @@ kubectl apply -f platform-owners/cluster2/cluster2-cluster-config.yaml --context
 # manual step because order matters - istio-base must come before istiod
 kubectl apply -f environments/cluster1/infra/active/istio-base.yaml --context ${cluster1_context}
 kubectl apply -f environments/cluster2/infra/active/istio-base.yaml --context ${cluster2_context}
+sleep 15
 
 # manual step because order matters - istiod must come before ingressgateway
 kubectl apply -f environments/cluster1/infra/active/istiod-${revision}.yaml --context ${cluster1_context}
