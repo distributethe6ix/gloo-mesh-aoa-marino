@@ -1,5 +1,5 @@
 # tested on macos
-#/bin/bash
+#!/bin/bash
 github_username=''$1''
 
 # check to see if license key variable was passed through, if not prompt for key

@@ -1,5 +1,5 @@
 # tested on macos
-#/bin/bash
+#!/bin/bash
 current_branch=''$1''
 target_branch=''$2''
 
