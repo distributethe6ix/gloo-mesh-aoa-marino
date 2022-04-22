@@ -89,3 +89,4 @@ echo "kubectl port-forward svc/argocd-server -n argocd 9999:443 --context ${mgmt
 echo
 echo "navigate to demo directory for more examples that you can apply"
 echo "cd demo/v2-workshop/domain/wildcard/"
+
