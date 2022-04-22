@@ -2,11 +2,13 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: not-in-mesh
+  namespace: httpbin
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: not-in-mesh
+  namespace: httpbin
   labels:
     app: not-in-mesh
     service: not-in-mesh
@@ -22,6 +24,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: not-in-mesh
+  namespace: httpbin
 spec:
   replicas: 1
   selector:
