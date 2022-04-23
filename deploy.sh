@@ -79,6 +79,9 @@ kubectl apply -f platform-owners/mgmt/mgmt-mesh-config.yaml --context ${mgmt_con
 kubectl apply -f platform-owners/cluster1/cluster1-mesh-config.yaml --context ${cluster1_context}
 #kubectl apply -f platform-owners/cluster2/cluster2-mesh-config.yaml --context ${cluster2_context}
 
+# (for local deployments on k3d) deploy istio ingressgateways manually
+./tools/install-ingressgateways.sh
+
 # echo port-forward commands
 echo
 echo "access gloo mesh dashboard:"
