@@ -32,28 +32,6 @@ kubectl apply -f platform-owners/mgmt/mgmt-cluster-config.yaml --context ${mgmt_
 kubectl apply -f platform-owners/cluster1/cluster1-cluster-config.yaml --context ${cluster1_context}
 kubectl apply -f platform-owners/cluster2/cluster2-cluster-config.yaml --context ${cluster2_context}
 
-############## fix this later ####################
-#
-## manual step because order matters - istio-base must come before istiod
-#kubectl apply -f environments/cluster1/infra/active/istio-base.yaml --context ${cluster1_context}
-#kubectl apply -f environments/cluster2/infra/active/istio-base.yaml --context ${cluster2_context}
-#sleep 15
-#
-## manual step because order matters - istiod must come before ingressgateway
-#kubectl apply -f environments/cluster1/infra/active/istiod-${revision}.yaml --context ${cluster1_context}
-#kubectl apply -f environments/cluster2/infra/active/istiod-${revision}.yaml --context ${cluster2_context}
-#
-## wait for completion of istiod install
-#./tools/wait-for-rollout.sh deployment istiod-${revision} istio-system 10 ${cluster1_context}
-#./tools/wait-for-rollout.sh deployment istiod-${revision} istio-system 10 ${cluster2_context}
-#
-## sleep 30
-#echo sleeping for 30 seconds
-#sleep 30
-#
-############## fix this later ####################
-
-# this meta app will take over the manual apps above
 # deploy mgmt, cluster1, and cluster2 environment infra app-of-apps
 kubectl apply -f platform-owners/mgmt/mgmt-infra.yaml --context ${mgmt_context}
 kubectl apply -f platform-owners/cluster1/cluster1-infra.yaml --context ${cluster1_context}
@@ -70,7 +48,6 @@ kubectl apply -f platform-owners/cluster2/cluster2-infra.yaml --context ${cluste
 ./tools/meshctl-register-helm-argocd-2-clusters.sh ${mgmt_context} ${cluster1_context} ${cluster2_context} ${gloo_mesh_version}
 
 # deploy cluster1, and cluster2 environment apps aoa
-#kubectl apply -f platform-owners/mgmt/mgmt-apps.yaml --context ${mgmt_context}
 kubectl apply -f platform-owners/cluster1/cluster1-apps.yaml --context ${cluster1_context}
 kubectl apply -f platform-owners/cluster2/cluster2-apps.yaml --context ${cluster2_context}
 
@@ -78,10 +55,8 @@ kubectl apply -f platform-owners/cluster2/cluster2-apps.yaml --context ${cluster
 ./tools/wait-for-rollout.sh deployment productpage-v1 bookinfo-frontends 10 ${cluster1_context}
 ./tools/wait-for-rollout.sh deployment productpage-v1 bookinfo-frontends 10 ${cluster2_context}
 
-# deploy mgmt, cluster1, and cluster2 mesh config aoa for 2 cluster demo (cluster1 and cluster2)
+# deploy mgmt mesh config aoa
 kubectl apply -f platform-owners/mgmt/mgmt-mesh-config.yaml --context ${mgmt_context}
-#kubectl apply -f platform-owners/cluster1/cluster1-mesh-config.yaml --context ${cluster1_context}
-#kubectl apply -f platform-owners/cluster2/cluster2-mesh-config.yaml --context ${cluster2_context}
 
 # (for local deployments on k3d) deploy istio ingressgateways manually
 ./tools/install-ingressgateways.sh
