@@ -76,7 +76,7 @@ kubectl apply -f platform-owners/cluster2/cluster2-apps.yaml --context ${cluster
 
 # deploy mgmt, cluster1, and cluster2 mesh config aoa for 2 cluster demo (cluster1 and cluster2)
 kubectl apply -f platform-owners/mgmt/mgmt-mesh-config.yaml --context ${mgmt_context}
-kubectl apply -f platform-owners/cluster1/cluster1-mesh-config.yaml --context ${cluster1_context}
+#kubectl apply -f platform-owners/cluster1/cluster1-mesh-config.yaml --context ${cluster1_context}
 #kubectl apply -f platform-owners/cluster2/cluster2-mesh-config.yaml --context ${cluster2_context}
 
 # (for local deployments on k3d) deploy istio ingressgateways manually
