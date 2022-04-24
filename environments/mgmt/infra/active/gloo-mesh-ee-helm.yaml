@@ -23,5 +23,5 @@ spec:
     targetRevision: 2.0.0-beta31
   syncPolicy:
     automated:
-      prune: true
-      selfHeal: true
+      prune: false
+      selfHeal: false
