@@ -17,6 +17,11 @@ spec:
         licenseKey: eyJleHAiOjE2NTMwODQwMzcsImlhdCI6MTY0OTk3MzYzNywiayI6IjYzNnNIUSIsImx0IjoidHJpYWwiLCJwcm9kdWN0IjoiZ2xvbyJ9.m6WgqDq10JloZgBmyIP7PBqprbOHvY5kcUaesPz81XU
         mgmtClusterName: mgmt
         glooMeshMgmtServer:
+          relay:
+            disableCa: true
+            disableCaCertGeneration: true
+            tlsSecret:
+              name: relay-server-tls-secret
           ports:
             healthcheck: 8091
     repoURL: https://storage.googleapis.com/gloo-mesh-enterprise/gloo-mesh-enterprise

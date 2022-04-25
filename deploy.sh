@@ -45,7 +45,7 @@ kubectl apply -f platform-owners/cluster2/cluster2-infra.yaml --context ${cluste
 ./tools/wait-for-rollout.sh deployment gloo-mesh-mgmt-server gloo-mesh 10 ${mgmt_context}
 
 # register clusters to gloo mesh
-./tools/meshctl-register-helm-argocd-2-clusters.sh ${mgmt_context} ${cluster1_context} ${cluster2_context} ${gloo_mesh_version}
+./tools/meshctl-register-helm-argocd-2-clusters-cert-manager.sh ${mgmt_context} ${cluster1_context} ${cluster2_context} ${gloo_mesh_version}
 
 # deploy cluster1, and cluster2 environment apps aoa
 kubectl apply -f platform-owners/cluster1/cluster1-apps.yaml --context ${cluster1_context}
