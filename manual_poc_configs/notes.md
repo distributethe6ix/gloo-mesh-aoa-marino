@@ -1,3 +1,5 @@
+
+
 gloo mesh helm install:
 ```
 helm repo add gloo-mesh-enterprise https://storage.googleapis.com/gloo-mesh-enterprise/gloo-mesh-enterprise 
@@ -14,7 +16,7 @@ gloo mesh `values.yaml`
 ```
 licenseKey: "${LICENSE_KEY}"
 
-mgmtClusterName: gehc-mgmt
+mgmtClusterName: mgmt
 
 glooMeshMgmtServer:
   resources:
