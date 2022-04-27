@@ -33,7 +33,7 @@ gateways:
       service.beta.kubernetes.io/aws-load-balancer-healthcheck-protocol: tcp
       service.beta.kubernetes.io/aws-load-balancer-healthcheck-unhealthy-threshold: "2"
       service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
-      service.beta.kubernetes.io/aws-load-balancer-scheme: internal
+      service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
       service.beta.kubernetes.io/aws-load-balancer-type: external
 EOF
 
@@ -72,7 +72,7 @@ gateways:
       service.beta.kubernetes.io/aws-load-balancer-healthcheck-protocol: tcp
       service.beta.kubernetes.io/aws-load-balancer-healthcheck-unhealthy-threshold: "2"
       service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
-      service.beta.kubernetes.io/aws-load-balancer-scheme: internal
+      service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
       service.beta.kubernetes.io/aws-load-balancer-type: external
     env:
       ISTIO_META_ROUTER_MODE: "sni-dnat"
@@ -115,7 +115,7 @@ gateways:
       service.beta.kubernetes.io/aws-load-balancer-healthcheck-protocol: tcp
       service.beta.kubernetes.io/aws-load-balancer-healthcheck-unhealthy-threshold: "2"
       service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
-      service.beta.kubernetes.io/aws-load-balancer-scheme: internal
+      service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
       service.beta.kubernetes.io/aws-load-balancer-type: external
 EOF
 
@@ -154,7 +154,7 @@ gateways:
       service.beta.kubernetes.io/aws-load-balancer-healthcheck-protocol: tcp
       service.beta.kubernetes.io/aws-load-balancer-healthcheck-unhealthy-threshold: "2"
       service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
-      service.beta.kubernetes.io/aws-load-balancer-scheme: internal
+      service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
       service.beta.kubernetes.io/aws-load-balancer-type: external
     env:
       ISTIO_META_ROUTER_MODE: "sni-dnat"

@@ -7,7 +7,7 @@ helm repo update
 kubectl create ns gloo-mesh 
 helm upgrade --install gloo-mesh-enterprise gloo-mesh-enterprise/gloo-mesh-enterprise -f values.yaml \
 --namespace gloo-mesh \
---version=2.0.0-beta19
+--version=2.0.0-beta31
 
 kubectl -n gloo-mesh rollout status deploy/gloo-mesh-mgmt-server
 ```
