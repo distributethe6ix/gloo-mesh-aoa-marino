@@ -4,7 +4,7 @@ metadata:
   name: bookinfo-cert
   namespace: istio-gateways
 spec:
-  secretName: bookinfo-secret
+  secretName: tls-secret
   duration: 2160h # 90d
   renewBefore: 360h # 15d
   subject:
