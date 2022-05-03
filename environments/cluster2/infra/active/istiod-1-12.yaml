@@ -45,14 +45,8 @@ spec:
     automated:
       prune: false
       selfHeal: false
-    syncOptions:
-    - RespectIgnoreDifferences=true
   ignoreDifferences:
-  - #group: admissionregistration.k8s.io/v1
-    kind: MutatingWebhookConfiguration
-    jsonPointers:
-    - /webhooks
-  - #group: admissionregistration.k8s.io/v1
-    kind: ValidatingWebhookConfiguration
-    jsonPointers:
-    - /webhooks
+  - group: '*'
+    kind: '*'
+    managedFieldsManagers:
+    - argocd-application-controller
