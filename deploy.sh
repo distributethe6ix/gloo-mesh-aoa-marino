@@ -59,7 +59,7 @@ kubectl apply -f platform-owners/cluster2/cluster2-apps.yaml --context ${cluster
 kubectl apply -f platform-owners/mgmt/mgmt-mesh-config.yaml --context ${mgmt_context}
 
 # (for local deployments on k3d) deploy istio ingressgateways manually
-#./tools/install-ingressgateways.sh
+./tools/install-ingressgateways.sh
 
 # echo port-forward commands
 echo
