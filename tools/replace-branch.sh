@@ -1,5 +1,5 @@
 # tested on macos
-#/bin/bash
+#!/bin/bash
 current_branch=''$1''
 target_branch=''$2''
 
@@ -32,12 +32,6 @@ sed -i '' -e 's/'${current_branch}'/'${target_branch}'/g' ../platform-owners/clu
 sed -i '' -e 's/'${current_branch}'/'${target_branch}'/g' ../platform-owners/cluster2/cluster2-cluster-config.yaml
 sed -i '' -e 's/'${current_branch}'/'${target_branch}'/g' ../platform-owners/cluster2/cluster2-infra.yaml
 sed -i '' -e 's/'${current_branch}'/'${target_branch}'/g' ../platform-owners/cluster2/cluster2-mesh-config.yaml
-
-#platform-owners/cluster3
-sed -i '' -e 's/'${current_branch}'/'${target_branch}'/g' ../platform-owners/cluster3/cluster3-apps.yaml
-sed -i '' -e 's/'${current_branch}'/'${target_branch}'/g' ../platform-owners/cluster3/cluster3-cluster-config.yaml
-sed -i '' -e 's/'${current_branch}'/'${target_branch}'/g' ../platform-owners/cluster3/cluster3-infra.yaml
-sed -i '' -e 's/'${current_branch}'/'${target_branch}'/g' ../platform-owners/cluster3/cluster3-mesh-config.yaml
 
 #platform-owners/mgmt
 sed -i '' -e 's/'${current_branch}'/'${target_branch}'/g' ../platform-owners/mgmt/mgmt-apps.yaml

@@ -15,11 +15,17 @@ spec:
     helm:
       values: |
         licenseKey: eyJleHAiOjE2NTMwODQwMzcsImlhdCI6MTY0OTk3MzYzNywiayI6IjYzNnNIUSIsImx0IjoidHJpYWwiLCJwcm9kdWN0IjoiZ2xvbyJ9.m6WgqDq10JloZgBmyIP7PBqprbOHvY5kcUaesPz81XU
+        mgmtClusterName: mgmt
+        glooMeshMgmtServer:
+          ports:
+            healthcheck: 8091
     repoURL: https://storage.googleapis.com/gloo-mesh-enterprise/gloo-mesh-enterprise
-    targetRevision: 1.3.0-beta8
+    targetRevision: 2.0.0-beta34
   syncPolicy:
     automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true 
+      prune: false
+      selfHeal: false
+  # ignore the self-signed certs that are being generated automatically    
+  ignoreDifferences:
+  - group: v1
+    kind: Secret
