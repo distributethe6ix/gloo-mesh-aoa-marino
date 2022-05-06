@@ -1,7 +1,5 @@
 # gloo-mesh-demo-aoa
 
-[![Youtube Video Demonstration](tools/images/gloo-mesh-aoa-demo.png)](https://youtu.be/7QWKzy9fDV4)
-
 ## version: 2.0.0-rc1
 
 This repo provides a multitenant capable GitOps workflow structure that can be forked and used to demonstrate the deployment and configuration a multi-cluster mesh demo as code using the Argo CD app-of-apps pattern
@@ -12,6 +10,9 @@ Run:
 ```
 ./deploy.sh           # deploys on mgmt, cluster1, cluster2
 ```
+
+Quick Youtube Demo:
+[![Youtube Video Demonstration](tools/images/gloo-mesh-aoa-demo.png)](https://youtu.be/7QWKzy9fDV4)
 
 Resource Requirements:
 - This demo has been tested on 1x `n2-standard-4` (gke), `m5.xlarge` (aws), or `Standard_DS3_v2` (azure) instance for `mgmt` cluster
