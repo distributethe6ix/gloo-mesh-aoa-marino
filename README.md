@@ -1,6 +1,6 @@
 # gloo-mesh-demo-aoa
 
-[![Youtube Video Demonstration](tools/images/gloo-mesh-aoa-demo.png)](https://youtu.be/7QWKzy9fDV4)
+[![Youtube Video Demonstration](tools/images/gloo-mesh-aoa-demo-1.png)](https://youtu.be/7QWKzy9fDV4)
 
 ## version: 2.0.0-rc1
 
