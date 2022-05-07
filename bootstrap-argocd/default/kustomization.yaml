@@ -6,7 +6,7 @@ resources:
 - base/rollouts-extension.yaml
 
 components:
-- https://github.com/argoproj-labs/argocd-extensions/manifests
+- github.com/argoproj-labs/argocd-extensions/manifests/?ref=main
 
 namespace: argocd
 
