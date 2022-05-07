@@ -10,7 +10,6 @@ spec:
   subject:
     organizations:
     - solo.io
-  #isCA: "false"
   privateKey:
     algorithm: RSA
     encoding: PKCS1
