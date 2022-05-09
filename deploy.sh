@@ -55,7 +55,7 @@ kubectl apply --context ${cluster1_context} -f- <<EOF
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: gm-enterprise-agent-cluster1
+  name: gm-enterprise-agent-${cluster1_context}
   namespace: argocd
 spec:
   destination:
@@ -70,7 +70,7 @@ spec:
         - values.yaml
       parameters:
         - name: cluster
-          value: 'cluster1'
+          value: '${cluster1_context}'
         - name: relay.serverAddress
           value: '${SVC}:9900'
         - name: relay.authority
@@ -101,7 +101,7 @@ kubectl apply --context ${cluster2_context} -f- <<EOF
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: gm-enterprise-agent-cluster2
+  name: gm-enterprise-agent-${cluster2_context}
   namespace: argocd
 spec:
   destination:
@@ -116,7 +116,7 @@ spec:
         - values.yaml
       parameters:
         - name: cluster
-          value: 'cluster2'
+          value: '${cluster2_context}'
         - name: relay.serverAddress
           value: '${SVC}:9900'
         - name: relay.authority
