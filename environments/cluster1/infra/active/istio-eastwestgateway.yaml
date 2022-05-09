@@ -60,6 +60,4 @@ spec:
           istio: eastwestgateway
           topology.istio.io/network: network1
   syncPolicy:
-    automated:
-      prune: false
-      selfHeal: false
+    automated: {}
