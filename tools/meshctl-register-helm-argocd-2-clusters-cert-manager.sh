@@ -14,29 +14,29 @@ until [ "${SVC}" != "" ]; do
   sleep 2
 done
 
-kubectl apply --context ${mgmt_context} -f- <<EOF
-apiVersion: admin.gloo.solo.io/v2
-kind: KubernetesCluster
-metadata:
-  name: cluster1
-  namespace: gloo-mesh
-  labels:
-    env: test
-spec:
-  clusterDomain: cluster.local
-EOF
-
-kubectl apply --context ${mgmt_context} -f- <<EOF
-apiVersion: admin.gloo.solo.io/v2
-kind: KubernetesCluster
-metadata:
-  name: cluster2
-  namespace: gloo-mesh
-  labels:
-    env: test
-spec:
-  clusterDomain: cluster.local
-EOF
+#kubectl apply --context ${mgmt_context} -f- <<EOF
+#apiVersion: admin.gloo.solo.io/v2
+#kind: KubernetesCluster
+#metadata:
+#  name: cluster1
+#  namespace: gloo-mesh
+#  labels:
+#    env: test
+#spec:
+#  clusterDomain: cluster.local
+#EOF
+#
+#kubectl apply --context ${mgmt_context} -f- <<EOF
+#apiVersion: admin.gloo.solo.io/v2
+#kind: KubernetesCluster
+#metadata:
+#  name: cluster2
+#  namespace: gloo-mesh
+#  labels:
+#    env: test
+#spec:
+#  clusterDomain: cluster.local
+#EOF
 
 kubectl apply --context ${cluster1_context} -f- <<EOF
 apiVersion: argoproj.io/v1alpha1

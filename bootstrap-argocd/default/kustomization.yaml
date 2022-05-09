@@ -14,6 +14,11 @@ images:
 - name: quay.io/argoproj/argocd
   newName: ghcr.io/argoproj/argocd
   newTag: 2.4.0-a8e6e40a
+  
+#images:
+#- name: quay.io/argoproj/argocd
+#  newTag: v2.4.0-rc1
+#  digest: sha256:92ea7377a66fa3e79dd1d7c804307a8b8829049fcf30df3884be764945d8ce7e
 
 patchesJson6902:
 - path: overlays/application-controller-status-processors.yaml
@@ -22,3 +27,6 @@ patchesJson6902:
     kind: StatefulSet
     name: argocd-application-controller
     version: v1
+
+patchesStrategicMerge:
+- overlays/argocd-cm.yaml
