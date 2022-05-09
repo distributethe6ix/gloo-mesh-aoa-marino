@@ -15,8 +15,6 @@ spec:
     server: https://kubernetes.default.svc
     namespace: bookinfo-frontends
   syncPolicy:
-    automated:
-      prune: false
-      selfHeal: false
+    automated: {}
     syncOptions:
       - CreateNamespace=true
