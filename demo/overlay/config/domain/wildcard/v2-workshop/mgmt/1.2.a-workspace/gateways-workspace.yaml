@@ -9,7 +9,3 @@ spec:
     namespaces:
     - name: istio-gateways
     - name: gloo-mesh-addons
-  - name: cluster2
-    namespaces:
-    - name: istio-gateways
-    - name: gloo-mesh-addons
