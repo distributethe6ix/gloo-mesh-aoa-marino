@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
 - gateways-workspace.yaml
 - bookinfo-workspace.yaml
+- httpbin-workspace.yaml
