@@ -37,10 +37,6 @@ kubectl apply -f platform-owners/mgmt/mgmt-infra.yaml --context ${mgmt_context}
 kubectl apply -f platform-owners/cluster1/cluster1-infra.yaml --context ${cluster1_context}
 kubectl apply -f platform-owners/cluster2/cluster2-infra.yaml --context ${cluster2_context}
 
-# wait for completion of istiod install
-./tools/wait-for-rollout.sh deployment istiod-${revision} istio-system 10 ${cluster1_context}
-./tools/wait-for-rollout.sh deployment istiod-${revision} istio-system 10 ${cluster2_context}
-
 # wait for completion of gloo-mesh install
 ./tools/wait-for-rollout.sh deployment gloo-mesh-mgmt-server gloo-mesh 10 ${mgmt_context}
 
@@ -57,9 +53,6 @@ kubectl apply -f platform-owners/cluster2/cluster2-apps.yaml --context ${cluster
 
 # deploy mgmt mesh config aoa
 kubectl apply -f platform-owners/mgmt/mgmt-mesh-config.yaml --context ${mgmt_context}
-
-# (for local deployments on k3d) deploy istio ingressgateways manually
-./tools/install-ingressgateways.sh
 
 # echo port-forward commands
 echo
