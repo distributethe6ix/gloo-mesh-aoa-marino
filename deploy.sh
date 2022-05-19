@@ -30,105 +30,15 @@ kubectl apply -f bootstrap-cluster/bootstrap-mgmt.yaml --context ${mgmt_context}
 kubectl apply -f bootstrap-cluster/bootstrap-cluster1.yaml --context ${cluster1_context}
 kubectl apply -f bootstrap-cluster/bootstrap-cluster2.yaml --context ${cluster2_context}
 
-# register clusters to gloo mesh with helm
-sleep 10
-until [ "${SVC}" != "" ]; do
-  SVC=$(kubectl --context ${mgmt_context} -n gloo-mesh get svc gloo-mesh-mgmt-server -o jsonpath='{.status.loadBalancer.ingress[0].*}')
-  echo waiting for gloo mesh management server LoadBalancer IP to be detected
-  sleep 2
-done
+# wait for completion of gloo-mesh install
+./tools/wait-for-rollout.sh deployment gloo-mesh-mgmt-server gloo-mesh 10 ${mgmt_context}
 
-kubectl apply --context ${cluster1_context} -f- <<EOF
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: gm-enterprise-agent-${cluster1_context}
-  namespace: argocd
-spec:
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: gloo-mesh
-  source:
-    repoURL: 'https://storage.googleapis.com/gloo-mesh-enterprise/gloo-mesh-agent'
-    targetRevision: ${gloo_mesh_version}
-    chart: gloo-mesh-agent
-    helm:
-      valueFiles:
-        - values.yaml
-      parameters:
-        - name: cluster
-          value: '${cluster1_context}'
-        - name: relay.serverAddress
-          value: '${SVC}:9900'
-        - name: relay.authority
-          value: 'gloo-mesh-mgmt-server.gloo-mesh'
-        - name: relay.clientTlsSecret.name
-          value: 'gloo-mesh-agent-cluster1-tls-cert'
-        - name: relay.clientTlsSecret.namespace
-          value: 'gloo-mesh'
-        - name: relay.rootTlsSecret.name
-          value: 'relay-root-tls-secret'
-        - name: relay.rootTlsSecret.namespace
-          value: 'gloo-mesh'
-        - name: rate-limiter.enabled
-          value: 'false'
-        - name: ext-auth-service.enabled
-          value: 'false'
-  syncPolicy:
-    automated:
-      prune: false
-      selfHeal: false
-    syncOptions:
-    - Replace=true
-    - ApplyOutOfSyncOnly=true
-  project: default
-EOF
+# register clusters to gloo mesh
+meshctl-register-helm-argocd-2-clusters.sh ${mgmt_context} ${cluster1_context} ${cluster2_context} ${gloo_mesh_version}
 
-kubectl apply --context ${cluster2_context} -f- <<EOF
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: gm-enterprise-agent-${cluster2_context}
-  namespace: argocd
-spec:
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: gloo-mesh
-  source:
-    repoURL: 'https://storage.googleapis.com/gloo-mesh-enterprise/gloo-mesh-agent'
-    targetRevision: ${gloo_mesh_version}
-    chart: gloo-mesh-agent
-    helm:
-      valueFiles:
-        - values.yaml
-      parameters:
-        - name: cluster
-          value: '${cluster2_context}'
-        - name: relay.serverAddress
-          value: '${SVC}:9900'
-        - name: relay.authority
-          value: 'gloo-mesh-mgmt-server.gloo-mesh'
-        - name: relay.clientTlsSecret.name
-          value: 'gloo-mesh-agent-cluster2-tls-cert'
-        - name: relay.clientTlsSecret.namespace
-          value: 'gloo-mesh'
-        - name: relay.rootTlsSecret.name
-          value: 'relay-root-tls-secret'
-        - name: relay.rootTlsSecret.namespace
-          value: 'gloo-mesh'
-        - name: rate-limiter.enabled
-          value: 'false'
-        - name: ext-auth-service.enabled
-          value: 'false'
-  syncPolicy:
-    automated:
-      prune: false
-      selfHeal: false
-    syncOptions:
-    - Replace=true
-    - ApplyOutOfSyncOnly=true
-  project: default
-EOF
+# wait for completion of bookinfo install
+./tools/wait-for-rollout.sh deployment productpage-v1 bookinfo-frontends 10 ${cluster1_context}
+./tools/wait-for-rollout.sh deployment productpage-v1 bookinfo-frontends 10 ${cluster2_context}
 
 # echo port-forward commands
 echo
