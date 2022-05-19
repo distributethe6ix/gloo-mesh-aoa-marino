@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: meta-cluster2-mesh-config
+  name: bootstrap-cluster2
   namespace: argocd
   finalizers:
   - resources-finalizer.argocd.argoproj.io
@@ -9,8 +9,8 @@ spec:
   project: default
   source:
     repoURL: https://github.com/ably77/gloo-mesh-aoa/
-    targetRevision: HEAD
-    path: environments/cluster2/mesh-config/active/
+    targetRevision: aoaoa
+    path: platform-owners/cluster2/
   destination:
     server: https://kubernetes.default.svc
   syncPolicy:

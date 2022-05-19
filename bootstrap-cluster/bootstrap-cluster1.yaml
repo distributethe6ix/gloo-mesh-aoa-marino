@@ -1,18 +1,16 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: meta-cluster2-infra
+  name: bootstrap-cluster1
   namespace: argocd
   finalizers:
   - resources-finalizer.argocd.argoproj.io
-  annotations:
-    argocd.argoproj.io/sync-wave: "-1"
 spec:
   project: default
   source:
     repoURL: https://github.com/ably77/gloo-mesh-aoa/
     targetRevision: aoaoa
-    path: environments/cluster2/infra/active/
+    path: platform-owners/cluster1/
   destination:
     server: https://kubernetes.default.svc
   syncPolicy:
