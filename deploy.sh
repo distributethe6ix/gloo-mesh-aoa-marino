@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 # note that the character '_' is an invalid value if you are replacing the defaults below
 cluster1_context="cluster1"
@@ -32,7 +31,7 @@ kubectl apply -f bootstrap-cluster/bootstrap-cluster1.yaml --context ${cluster1_
 kubectl apply -f bootstrap-cluster/bootstrap-cluster2.yaml --context ${cluster2_context}
 
 # register clusters to gloo mesh with helm
-
+sleep 10
 until [ "${SVC}" != "" ]; do
   SVC=$(kubectl --context ${mgmt_context} -n gloo-mesh get svc gloo-mesh-mgmt-server -o jsonpath='{.status.loadBalancer.ingress[0].*}')
   echo waiting for gloo mesh management server LoadBalancer IP to be detected
