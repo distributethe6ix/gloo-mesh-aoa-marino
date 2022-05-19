@@ -6,7 +6,6 @@ cluster1_context="cluster1"
 cluster2_context="cluster2"
 mgmt_context="mgmt"
 gloo_mesh_version="2.0.2"
-revision="1-12"
 
 # check to see if defined contexts exist
 if [[ $(kubectl config get-contexts | grep ${mgmt_context}) == "" ]] || [[ $(kubectl config get-contexts | grep ${cluster1_context}) == "" ]] || [[ $(kubectl config get-contexts | grep ${cluster2_context}) == "" ]]; then
@@ -27,32 +26,110 @@ cd ..
 ./tools/wait-for-rollout.sh deployment argocd-server argocd 20 ${cluster1_context}
 ./tools/wait-for-rollout.sh deployment argocd-server argocd 20 ${cluster2_context}
 
-# deploy mgmt, cluster1, and cluster2 cluster config aoa
-kubectl apply -f platform-owners/mgmt/mgmt-cluster-config.yaml --context ${mgmt_context}
-kubectl apply -f platform-owners/cluster1/cluster1-cluster-config.yaml --context ${cluster1_context}
-kubectl apply -f platform-owners/cluster2/cluster2-cluster-config.yaml --context ${cluster2_context}
+# bootstrap mgmt, cluster1, and cluster2
+kubectl apply -f bootstrap-cluster/bootstrap-mgmt.yaml --context ${mgmt_context}
+kubectl apply -f bootstrap-cluster/bootstrap-cluster1.yaml --context ${cluster1_context}
+kubectl apply -f bootstrap-cluster/bootstrap-cluster2.yaml --context ${cluster2_context}
 
-# deploy mgmt, cluster1, and cluster2 environment infra app-of-apps
-kubectl apply -f platform-owners/mgmt/mgmt-infra.yaml --context ${mgmt_context}
-kubectl apply -f platform-owners/cluster1/cluster1-infra.yaml --context ${cluster1_context}
-kubectl apply -f platform-owners/cluster2/cluster2-infra.yaml --context ${cluster2_context}
+# register clusters to gloo mesh with helm
 
-# wait for completion of gloo-mesh install
-./tools/wait-for-rollout.sh deployment gloo-mesh-mgmt-server gloo-mesh 10 ${mgmt_context}
+until [ "${SVC}" != "" ]; do
+  SVC=$(kubectl --context ${mgmt_context} -n gloo-mesh get svc gloo-mesh-mgmt-server -o jsonpath='{.status.loadBalancer.ingress[0].*}')
+  echo waiting for gloo mesh management server LoadBalancer IP to be detected
+  sleep 2
+done
 
-# register clusters to gloo mesh
-./tools/meshctl-register-helm-argocd-2-clusters.sh ${mgmt_context} ${cluster1_context} ${cluster2_context} ${gloo_mesh_version}
+kubectl apply --context ${cluster1_context} -f- <<EOF
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gm-enterprise-agent-${cluster1_context}
+  namespace: argocd
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: gloo-mesh
+  source:
+    repoURL: 'https://storage.googleapis.com/gloo-mesh-enterprise/gloo-mesh-agent'
+    targetRevision: ${gloo_mesh_version}
+    chart: gloo-mesh-agent
+    helm:
+      valueFiles:
+        - values.yaml
+      parameters:
+        - name: cluster
+          value: '${cluster1_context}'
+        - name: relay.serverAddress
+          value: '${SVC}:9900'
+        - name: relay.authority
+          value: 'gloo-mesh-mgmt-server.gloo-mesh'
+        - name: relay.clientTlsSecret.name
+          value: 'gloo-mesh-agent-cluster1-tls-cert'
+        - name: relay.clientTlsSecret.namespace
+          value: 'gloo-mesh'
+        - name: relay.rootTlsSecret.name
+          value: 'relay-root-tls-secret'
+        - name: relay.rootTlsSecret.namespace
+          value: 'gloo-mesh'
+        - name: rate-limiter.enabled
+          value: 'false'
+        - name: ext-auth-service.enabled
+          value: 'false'
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
+    syncOptions:
+    - Replace=true
+    - ApplyOutOfSyncOnly=true
+  project: default
+EOF
 
-# deploy cluster1, and cluster2 environment apps aoa
-kubectl apply -f platform-owners/cluster1/cluster1-apps.yaml --context ${cluster1_context}
-kubectl apply -f platform-owners/cluster2/cluster2-apps.yaml --context ${cluster2_context}
-
-# wait for completion of bookinfo install
-./tools/wait-for-rollout.sh deployment productpage-v1 bookinfo-frontends 10 ${cluster1_context}
-./tools/wait-for-rollout.sh deployment productpage-v1 bookinfo-frontends 10 ${cluster2_context}
-
-# deploy mgmt mesh config aoa
-kubectl apply -f platform-owners/mgmt/mgmt-mesh-config.yaml --context ${mgmt_context}
+kubectl apply --context ${cluster2_context} -f- <<EOF
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gm-enterprise-agent-${cluster2_context}
+  namespace: argocd
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: gloo-mesh
+  source:
+    repoURL: 'https://storage.googleapis.com/gloo-mesh-enterprise/gloo-mesh-agent'
+    targetRevision: ${gloo_mesh_version}
+    chart: gloo-mesh-agent
+    helm:
+      valueFiles:
+        - values.yaml
+      parameters:
+        - name: cluster
+          value: '${cluster2_context}'
+        - name: relay.serverAddress
+          value: '${SVC}:9900'
+        - name: relay.authority
+          value: 'gloo-mesh-mgmt-server.gloo-mesh'
+        - name: relay.clientTlsSecret.name
+          value: 'gloo-mesh-agent-cluster2-tls-cert'
+        - name: relay.clientTlsSecret.namespace
+          value: 'gloo-mesh'
+        - name: relay.rootTlsSecret.name
+          value: 'relay-root-tls-secret'
+        - name: relay.rootTlsSecret.namespace
+          value: 'gloo-mesh'
+        - name: rate-limiter.enabled
+          value: 'false'
+        - name: ext-auth-service.enabled
+          value: 'false'
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
+    syncOptions:
+    - Replace=true
+    - ApplyOutOfSyncOnly=true
+  project: default
+EOF
 
 # echo port-forward commands
 echo
