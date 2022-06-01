@@ -2,10 +2,10 @@ apiVersion: networking.gloo.solo.io/v2
 kind: RouteTable
 metadata:
   name: ratings
-  namespace: bookinfo-backends
+  namespace: bookinfo-backends-foo
 spec:
   hosts:
-    - 'ratings.bookinfo-backends.svc.cluster.local'
+    - 'ratings.bookinfo-backends-foo.svc.cluster.local'
   workloadSelectors:
   - selector:
       labels:
@@ -21,6 +21,6 @@ spec:
         destinations:
           - ref:
               name: ratings
-              namespace: bookinfo-backends
+              namespace: bookinfo-backends-foo
             port:
               number: 9080

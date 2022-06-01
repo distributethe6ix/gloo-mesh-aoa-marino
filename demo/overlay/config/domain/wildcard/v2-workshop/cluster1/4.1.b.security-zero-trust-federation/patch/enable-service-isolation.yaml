@@ -2,7 +2,7 @@ apiVersion: admin.gloo.solo.io/v2
 kind: WorkspaceSettings
 metadata:
   name: bookinfo
-  namespace: bookinfo-frontends
+  namespace: bookinfo-frontends-foo
 spec:
   options:
     serviceIsolation:
