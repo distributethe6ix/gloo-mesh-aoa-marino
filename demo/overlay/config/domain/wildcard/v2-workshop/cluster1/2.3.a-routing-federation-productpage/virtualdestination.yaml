@@ -12,6 +12,9 @@ spec:
   - namespace: bookinfo-frontends-foo
     labels:
       app: productpage
+  - namespace: bookinfo-frontends-bar
+    labels:
+      app: productpage
   ports:
     - number: 9080
       protocol: HTTP

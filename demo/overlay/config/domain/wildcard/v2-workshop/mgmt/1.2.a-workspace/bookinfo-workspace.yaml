@@ -10,8 +10,8 @@ spec:
   - name: cluster1
     namespaces:
     - name: bookinfo-frontends-foo
-    - name: bookinfo-backends
+    - name: bookinfo-backends-foo
   - name: cluster2
     namespaces:
     - name: bookinfo-frontends-bar
-    - name: bookinfo-backends
+    - name: bookinfo-backends-bar

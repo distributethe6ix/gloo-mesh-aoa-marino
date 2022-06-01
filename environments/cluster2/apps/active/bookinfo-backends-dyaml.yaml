@@ -4,7 +4,7 @@ metadata:
   labels:
     account: details
   name: bookinfo-details
-  namespace: bookinfo-backends
+  namespace: bookinfo-backends-bar
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -12,7 +12,7 @@ metadata:
   labels:
     account: ratings
   name: bookinfo-ratings
-  namespace: bookinfo-backends
+  namespace: bookinfo-backends-bar
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -20,7 +20,7 @@ metadata:
   labels:
     account: reviews
   name: bookinfo-reviews
-  namespace: bookinfo-backends
+  namespace: bookinfo-backends-bar
 ---
 apiVersion: v1
 kind: Service
@@ -29,7 +29,7 @@ metadata:
     app: details
     service: details
   name: details
-  namespace: bookinfo-backends
+  namespace: bookinfo-backends-bar
 spec:
   ports:
   - name: http
@@ -44,7 +44,7 @@ metadata:
     app: ratings
     service: ratings
   name: ratings
-  namespace: bookinfo-backends
+  namespace: bookinfo-backends-bar
 spec:
   ports:
   - name: http
@@ -59,7 +59,7 @@ metadata:
     app: reviews
     service: reviews
   name: reviews
-  namespace: bookinfo-backends
+  namespace: bookinfo-backends-bar
 spec:
   ports:
   - name: http
@@ -74,7 +74,7 @@ metadata:
     app: details
     version: v1
   name: details-v1
-  namespace: bookinfo-backends
+  namespace: bookinfo-backends-bar
 spec:
   replicas: 1
   selector:
@@ -104,7 +104,7 @@ metadata:
     app: ratings
     version: v1
   name: ratings-v1
-  namespace: bookinfo-backends
+  namespace: bookinfo-backends-bar
 spec:
   replicas: 1
   selector:
@@ -134,7 +134,7 @@ metadata:
     app: reviews
     version: v1
   name: reviews-v1
-  namespace: bookinfo-backends
+  namespace: bookinfo-backends-bar
 spec:
   replicas: 1
   selector:
@@ -179,7 +179,7 @@ metadata:
     app: reviews
     version: v2
   name: reviews-v2
-  namespace: bookinfo-backends
+  namespace: bookinfo-backends-bar
 spec:
   replicas: 1
   selector:
@@ -224,7 +224,7 @@ metadata:
     app: reviews
     version: v3
   name: reviews-v3
-  namespace: bookinfo-backends
+  namespace: bookinfo-backends-bar
 spec:
   replicas: 1
   selector:
