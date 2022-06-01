@@ -2,7 +2,7 @@ apiVersion: networking.gloo.solo.io/v2
 kind: RouteTable
 metadata:
   name: productpage
-  namespace: bookinfo-frontends
+  namespace: bookinfo-frontends-bar
   labels:
     workspace.solo.io/exported: "true"
 spec:
@@ -30,6 +30,6 @@ spec:
         destinations:
           - ref:
               name: productpage
-              namespace: bookinfo-frontends
+              namespace: bookinfo-frontends-bar
             port:
               number: 9080

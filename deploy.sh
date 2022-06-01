@@ -48,8 +48,8 @@ kubectl apply -f platform-owners/cluster1/cluster1-apps.yaml --context ${cluster
 kubectl apply -f platform-owners/cluster2/cluster2-apps.yaml --context ${cluster2_context}
 
 # wait for completion of bookinfo install
-./tools/wait-for-rollout.sh deployment productpage-v1 bookinfo-frontends 10 ${cluster1_context}
-./tools/wait-for-rollout.sh deployment productpage-v1 bookinfo-frontends 10 ${cluster2_context}
+./tools/wait-for-rollout.sh deployment productpage-v1 bookinfo-frontends-foo 10 ${cluster1_context}
+./tools/wait-for-rollout.sh deployment productpage-v1 bookinfo-frontends-bar 10 ${cluster2_context}
 
 # deploy mgmt mesh config aoa
 kubectl apply -f platform-owners/mgmt/mgmt-mesh-config.yaml --context ${mgmt_context}
