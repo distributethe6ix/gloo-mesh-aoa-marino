@@ -84,6 +84,8 @@ spec:
           value: 'false'
         - name: relay.tokenSecret.namespace
           value: 'gloo-mesh'
+        - name: istiodSidecar.createRoleBinding
+          value: 'true'
   syncPolicy:
     automated:
       prune: false
@@ -125,6 +127,8 @@ spec:
           value: 'false'
         - name: relay.tokenSecret.namespace
           value: 'gloo-mesh'
+        - name: istiodSidecar.createRoleBinding
+          value: 'true'
   syncPolicy:
     automated:
       prune: false
