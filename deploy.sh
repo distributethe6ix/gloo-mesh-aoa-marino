@@ -5,7 +5,7 @@ set -e
 cluster1_context="cluster1"
 cluster2_context="cluster2"
 mgmt_context="mgmt"
-gloo_mesh_version="2.0.5"
+gloo_mesh_version="2.0.6"
 revision="1-12"
 
 # check to see if defined contexts exist
@@ -84,6 +84,9 @@ spec:
           value: 'false'
         - name: ext-auth-service.enabled
           value: 'false'
+        # enabled for future vault integration
+        - name: istiodSidecar.createRoleBinding
+          value: 'true'
   syncPolicy:
     automated:
       prune: false
@@ -130,6 +133,9 @@ spec:
           value: 'false'
         - name: ext-auth-service.enabled
           value: 'false'
+        # enabled for future vault integration
+        - name: istiodSidecar.createRoleBinding
+          value: 'true'
   syncPolicy:
     automated:
       prune: false
