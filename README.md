@@ -1,6 +1,6 @@
 # gloo-mesh-demo-aoa
 
-## version: 2.0.5
+## version: 2.0.6
 
 This repo provides a multitenant capable GitOps workflow structure that can be forked and used to demonstrate the deployment and configuration a multi-cluster mesh demo as code using the Argo CD app-of-apps pattern
  
