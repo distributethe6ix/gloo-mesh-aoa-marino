@@ -21,4 +21,4 @@ spec:
   issuerRef:
     group: cert-manager.io
     kind: Issuer
-    name: relay-root-ca
+    name: istio-ca
