@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: istiod-1-12
+  name: istiod-1-13
   namespace: argocd
   finalizers:
   - resources-finalizer.argocd.argoproj.io
@@ -15,17 +15,17 @@ spec:
   source:
     chart: istiod
     repoURL: https://istio-release.storage.googleapis.com/charts
-    targetRevision: 1.12.6
+    targetRevision: 1.13.4
     helm:
       values: |
-        revision: 1-12
+        revision: 1-13
         global:
           meshID: mesh1
           multiCluster:
             clusterName: cluster1
           network: network1
           hub: us-docker.pkg.dev/gloo-mesh/istio-workshops
-          tag: 1.12.6-solo
+          tag: 1.13.4-solo
         meshConfig:
           trustDomain: cluster1
           accessLogFile: /dev/stdout

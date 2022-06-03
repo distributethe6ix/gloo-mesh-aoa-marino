@@ -50,7 +50,7 @@ spec:
     metadata:
       labels:
         app: sleep-in-mesh
-        istio.io/rev: 1-12
+        istio.io/rev: 1-13
     spec:
       terminationGracePeriodSeconds: 0
       serviceAccountName: sleep-in-mesh

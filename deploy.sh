@@ -4,7 +4,7 @@ set -e
 # note that the character '_' is an invalid value if you are replacing the defaults below
 cluster1_context="cluster1"
 mgmt_context="mgmt"
-gloo_mesh_version="2.0.0-rc1"
+gloo_mesh_version="2.0.6"
 revision="1-12"
 
 # check to see if defined contexts exist
@@ -79,6 +79,8 @@ spec:
           value: 'false'
         - name: ext-auth-service.enabled
           value: 'false'
+        - name: istiodSidecar.createRoleBinding
+          value: 'true'
   syncPolicy:
     automated:
       prune: false
