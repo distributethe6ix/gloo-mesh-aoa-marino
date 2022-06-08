@@ -20,8 +20,8 @@ spec:
           - ref:
               name: reviews
               namespace: bookinfo-backends
-              cluster: cluster2
+              cluster: cluster1
             port:
               number: 9080
             subset:
-              version: v3
+              version: v1

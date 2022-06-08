@@ -13,3 +13,7 @@ spec:
     namespaces:
     - name: istio-gateways
     - name: gloo-mesh-addons
+  - name: mgmt
+    namespaces:
+    - name: istio-gateways
+    - name: gloo-mesh-addons

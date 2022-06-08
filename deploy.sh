@@ -48,6 +48,55 @@ until [ "${SVC}" != "" ]; do
   sleep 2
 done
 
+kubectl apply --context ${mgmt_context} -f- <<EOF
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gm-enterprise-agent-${mgmt_context}
+  namespace: argocd
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: gloo-mesh
+  source:
+    repoURL: 'https://storage.googleapis.com/gloo-mesh-enterprise/gloo-mesh-agent'
+    targetRevision: ${gloo_mesh_version}
+    chart: gloo-mesh-agent
+    helm:
+      valueFiles:
+        - values.yaml
+      parameters:
+        - name: cluster
+          value: '${mgmt_context}'
+        - name: relay.serverAddress
+          value: '${SVC}:9900'
+        - name: relay.authority
+          value: 'gloo-mesh-mgmt-server.gloo-mesh'
+        - name: relay.clientTlsSecret.name
+          value: 'gloo-mesh-agent-mgmt-tls-cert'
+        - name: relay.clientTlsSecret.namespace
+          value: 'gloo-mesh'
+        - name: relay.rootTlsSecret.name
+          value: 'relay-root-tls-secret'
+        - name: relay.rootTlsSecret.namespace
+          value: 'gloo-mesh'
+        - name: rate-limiter.enabled
+          value: 'false'
+        - name: ext-auth-service.enabled
+          value: 'false'
+        # enabled for future vault integration
+        - name: istiodSidecar.createRoleBinding
+          value: 'true'
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
+    syncOptions:
+    - Replace=true
+    - ApplyOutOfSyncOnly=true
+  project: default
+EOF
+
 kubectl apply --context ${cluster1_context} -f- <<EOF
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -147,6 +196,7 @@ spec:
 EOF
 
 # deploy cluster1, and cluster2 environment apps aoa
+kubectl apply -f platform-owners/mgmt/mgmt-apps.yaml --context ${mgmt_context}
 kubectl apply -f platform-owners/cluster1/cluster1-apps.yaml --context ${cluster1_context}
 kubectl apply -f platform-owners/cluster2/cluster2-apps.yaml --context ${cluster2_context}
 
