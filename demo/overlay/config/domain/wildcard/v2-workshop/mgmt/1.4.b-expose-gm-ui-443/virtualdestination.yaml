@@ -1,0 +1,18 @@
+apiVersion: networking.gloo.solo.io/v2
+kind: VirtualDestination
+metadata:
+  name: gm-ui-vd
+  namespace: gloo-mesh
+  labels:
+    expose: "true"
+spec:
+  hosts:
+  - gm-ui.mgmt.global
+  services:
+  - namespace: gloo-mesh
+    labels:
+      app: gloo-mesh-ui
+    cluster: mgmt
+  ports:
+    - number: 8090
+      protocol: HTTP

@@ -3,8 +3,8 @@ kind: RouteTable
 metadata:
   labels:
     expose: "true"
-  name: mgmt-argo-rt-80
-  namespace: argocd
+  name: gm-ui-rt-80
+  namespace: gloo-mesh
 spec:
   hosts:
   - '*'
@@ -13,14 +13,17 @@ spec:
       destinations:
       - kind: VIRTUAL_DESTINATION
         port:
-          number: 80
+          number: 8090
         ref:
           cluster: mgmt
-          name: argo-cluster2-vd
-          namespace: argocd
+          name: gm-ui-vd
+          namespace: gloo-mesh
+    matchers:
+    - uri:
+        prefix: /
     labels:
       waf: "true"
-    name: argocd
+    name: gloo-mesh-ui
   virtualGateways:
   - cluster: mgmt
     name: north-south-gw-80

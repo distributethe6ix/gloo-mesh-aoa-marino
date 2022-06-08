@@ -1,7 +1,7 @@
 apiVersion: admin.gloo.solo.io/v2
 kind: Workspace
 metadata:
-  name: argo-workspace
+  name: admin-workspace
   namespace: gloo-mesh
   labels:
     allow_ingress: "true"
@@ -10,6 +10,7 @@ spec:
   - name: mgmt
     namespaces:
     - name: argocd
+    - name: gloo-mesh
   - name: cluster1
     namespaces:
     - name: argocd

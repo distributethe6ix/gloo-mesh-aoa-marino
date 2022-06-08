@@ -24,6 +24,16 @@ spec:
               name: relay-server-tls-secret
           ports:
             healthcheck: 8091
+        glooMeshUi:
+          enabled: true
+          deploymentOverrides:
+            spec:
+              template:
+                metadata:
+                  annotations:
+                    sidecar.istio.io/inject: "true"
+                  labels:
+                    istio.io/rev: "1-12"
     repoURL: https://storage.googleapis.com/gloo-mesh-enterprise/gloo-mesh-enterprise
     targetRevision: 2.0.6
   syncPolicy:

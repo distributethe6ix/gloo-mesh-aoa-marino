@@ -4,4 +4,4 @@ kind: Kustomization
 resources:
 - gateways-workspace.yaml
 - bookinfo-workspace.yaml
-- argo-workspace.yaml
+- admin-workspace.yaml

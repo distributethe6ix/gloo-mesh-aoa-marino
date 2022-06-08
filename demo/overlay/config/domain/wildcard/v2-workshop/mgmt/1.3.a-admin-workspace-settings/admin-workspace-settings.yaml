@@ -1,8 +1,8 @@
 apiVersion: admin.gloo.solo.io/v2
 kind: WorkspaceSettings
 metadata:
-  name: argo-workspace-settings
-  namespace: argocd
+  name: admin-workspace-settings
+  namespace: gloo-mesh
 spec:
   importFrom:
   - workspaces:
@@ -23,7 +23,3 @@ spec:
     federation:
       enabled: true
       hostSuffix: global
-      #serviceSelector:
-      #- workspace: bookinfo
-      #  labels:
-      #    app: reviews

@@ -1,13 +1,13 @@
 apiVersion: networking.gloo.solo.io/v2
 kind: VirtualDestination
 metadata:
-  name: argo-cluster1-vd
+  name: argo-cluster2-vd
   namespace: argocd
   labels:
     expose: "true"
 spec:
   hosts:
-  - argocd.cluster1.global
+  - argocd.cluster2.global
   services:
   - namespace: argocd
     labels:
