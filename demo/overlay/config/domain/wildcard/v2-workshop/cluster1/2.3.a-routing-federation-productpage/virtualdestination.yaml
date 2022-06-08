@@ -13,6 +13,10 @@ spec:
     labels:
       app: productpage
     cluster: cluster1
+  - namespace: bookinfo-frontends
+    labels:
+      app: productpage
+    cluster: cluster2
   ports:
     - number: 9080
       protocol: HTTP
