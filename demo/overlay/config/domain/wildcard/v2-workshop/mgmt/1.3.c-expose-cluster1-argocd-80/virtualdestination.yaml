@@ -1,0 +1,18 @@
+apiVersion: networking.gloo.solo.io/v2
+kind: VirtualDestination
+metadata:
+  name: argo-cluster1-vd
+  namespace: argocd
+  labels:
+    expose: "true"
+spec:
+  hosts:
+  - argocd.cluster1.global
+  services:
+  - namespace: argocd
+    labels:
+      app.kubernetes.io/name: argocd-server
+    cluster: cluster1
+  ports:
+    - number: 80
+      protocol: HTTP

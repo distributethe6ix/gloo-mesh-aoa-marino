@@ -17,9 +17,9 @@ fi
 
 # install argocd on ${mgmt_context}, ${cluster1_context}, and ${cluster2_context}
 cd bootstrap-argocd
-./install-argocd.sh default ${mgmt_context}
-./install-argocd.sh default ${cluster1_context}
-./install-argocd.sh default ${cluster2_context}
+./install-argocd.sh insecure-rootpath ${mgmt_context}
+./install-argocd.sh insecure-rootpath ${cluster1_context}
+./install-argocd.sh insecure-rootpath ${cluster2_context}
 cd ..
 
 # wait for argo cluster rollout
