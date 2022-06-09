@@ -8,6 +8,7 @@ metadata:
 spec:
   hosts:
   - 'gloomeshui.example.com'
+  #- '*'
   http:
   - forwardTo:
       destinations:
