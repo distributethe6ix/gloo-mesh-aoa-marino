@@ -3,7 +3,7 @@ set -e
 
 # note that the character '_' is an invalid value if you are replacing the defaults below
 mgmt_context="mgmt"
-gloo_mesh_version="2.0.6"
+gloo_mesh_version="2.0.7"
 revision="1-12"
 
 # check to see if defined contexts exist
@@ -101,6 +101,4 @@ echo
 echo "access argocd dashboard:"
 echo "kubectl port-forward svc/argocd-server -n argocd 9999:443 --context ${mgmt_context}"
 echo
-echo "navigate to demo directory for more examples that you can apply"
-echo "cd demo/argo/config/domain/wildcard/v2-workshop/"
 
