@@ -7,8 +7,8 @@ metadata:
   namespace: gloo-mesh
 spec:
   hosts:
-  - 'gloomeshui.example.com'
-  #- '*'
+  #- 'gloomeshui.example.com'
+  - '*'
   http:
   - forwardTo:
       destinations:

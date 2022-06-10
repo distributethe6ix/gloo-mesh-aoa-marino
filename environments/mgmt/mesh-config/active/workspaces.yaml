@@ -21,24 +21,6 @@ spec:
 apiVersion: admin.gloo.solo.io/v2
 kind: Workspace
 metadata:
-  labels:
-    allow_ingress: "true"
-  name: bookinfo
-  namespace: gloo-mesh
-spec:
-  workloadClusters:
-  - name: cluster1
-    namespaces:
-    - name: bookinfo-frontends
-    - name: bookinfo-backends
-  - name: cluster2
-    namespaces:
-    - name: bookinfo-frontends
-    - name: bookinfo-backends
----
-apiVersion: admin.gloo.solo.io/v2
-kind: Workspace
-metadata:
   name: gateways
   namespace: gloo-mesh
 spec:
