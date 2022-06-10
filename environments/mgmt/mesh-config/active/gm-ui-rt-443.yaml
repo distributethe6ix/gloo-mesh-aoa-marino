@@ -21,6 +21,15 @@ spec:
     labels:
       waf: "true"
     name: gloo-mesh-ui
+    matchers:
+    - uri:
+        prefix: /
+    - uri:
+        prefix: /graph
+    - uri:
+        prefix: /gateways
+    - uri:
+        prefix: /policies
   virtualGateways:
   - cluster: mgmt
     name: north-south-gw-443
