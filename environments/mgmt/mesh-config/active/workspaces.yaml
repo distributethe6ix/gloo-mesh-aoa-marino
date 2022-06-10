@@ -37,3 +37,16 @@ spec:
     namespaces:
     - name: istio-gateways
     - name: gloo-mesh-addons
+---
+apiVersion: admin.gloo.solo.io/v2
+kind: Workspace
+metadata:
+  name: httpbin
+  namespace: gloo-mesh
+  labels:
+    allow_ingress: "true"
+spec:
+  workloadClusters:
+  - name: mgmt
+    namespaces:
+    - name: httpbin
