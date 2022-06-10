@@ -13,13 +13,13 @@ if [[ $(kubectl config get-contexts | grep ${mgmt_context}) == "" ]] ; then
   exit 1;
 fi
 
-## install argocd on ${mgmt_context}, ${cluster1_context}, and ${cluster2_context}
-#cd bootstrap-argocd
-#./install-argocd.sh insecure ${mgmt_context}
-#cd ..
-#
-## wait for argo cluster rollout
-#./tools/wait-for-rollout.sh deployment argocd-server argocd 20 ${mgmt_context}
+# install argocd on ${mgmt_context}, ${cluster1_context}, and ${cluster2_context}
+cd bootstrap-argocd
+./install-argocd.sh insecure ${mgmt_context}
+cd ..
+
+# wait for argo cluster rollout
+./tools/wait-for-rollout.sh deployment argocd-server argocd 20 ${mgmt_context}
 
 # deploy mgmt, cluster1, and cluster2 cluster config aoa
 kubectl apply -f platform-owners/mgmt/mgmt-cluster-config.yaml --context ${mgmt_context}
