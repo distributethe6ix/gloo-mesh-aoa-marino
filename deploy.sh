@@ -1,10 +1,9 @@
 #!/bin/bash
-set -e
+#set -e
 
 # note that the character '_' is an invalid value if you are replacing the defaults below
 mgmt_context="mgmt"
 gloo_mesh_version="2.0.7"
-revision="1-12"
 
 # check to see if defined contexts exist
 if [[ $(kubectl config get-contexts | grep ${mgmt_context}) == "" ]] ; then
