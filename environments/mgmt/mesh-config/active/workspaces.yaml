@@ -1,0 +1,57 @@
+apiVersion: admin.gloo.solo.io/v2
+kind: Workspace
+metadata:
+  labels:
+    allow_ingress: "true"
+  name: admin-workspace
+  namespace: gloo-mesh
+spec:
+  workloadClusters:
+  - name: mgmt
+    namespaces:
+    - name: argocd
+    - name: gloo-mesh
+  - name: cluster1
+    namespaces:
+    - name: argocd
+  - name: cluster2
+    namespaces:
+    - name: argocd
+---
+apiVersion: admin.gloo.solo.io/v2
+kind: Workspace
+metadata:
+  labels:
+    allow_ingress: "true"
+  name: bookinfo
+  namespace: gloo-mesh
+spec:
+  workloadClusters:
+  - name: cluster1
+    namespaces:
+    - name: bookinfo-frontends
+    - name: bookinfo-backends
+  - name: cluster2
+    namespaces:
+    - name: bookinfo-frontends
+    - name: bookinfo-backends
+---
+apiVersion: admin.gloo.solo.io/v2
+kind: Workspace
+metadata:
+  name: gateways
+  namespace: gloo-mesh
+spec:
+  workloadClusters:
+  - name: cluster1
+    namespaces:
+    - name: istio-gateways
+    - name: gloo-mesh-addons
+  - name: cluster2
+    namespaces:
+    - name: istio-gateways
+    - name: gloo-mesh-addons
+  - name: mgmt
+    namespaces:
+    - name: istio-gateways
+    - name: gloo-mesh-addons
