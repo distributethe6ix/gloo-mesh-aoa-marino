@@ -9,7 +9,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/ably77/gloo-mesh-aoa/
-    targetRevision: 1.13-v2.0.6-certmanager-singlecluster
+    targetRevision: 1.13-v2.0.7-certmanager-1worker
     path: environments/cluster1/mesh-config/active/
   destination:
     server: https://kubernetes.default.svc
