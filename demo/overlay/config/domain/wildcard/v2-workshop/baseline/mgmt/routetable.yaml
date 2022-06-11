@@ -33,7 +33,5 @@ spec:
           - ref:
               name: productpage
               namespace: bookinfo-frontends
-              cluster: cluster1
-            kind: VIRTUAL_DESTINATION
             port:
               number: 9080

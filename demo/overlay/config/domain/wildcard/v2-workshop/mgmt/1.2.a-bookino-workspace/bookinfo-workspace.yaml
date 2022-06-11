@@ -7,7 +7,16 @@ metadata:
     allow_ingress: "true"
 spec:
   workloadClusters:
+  #- name: mgmt
+  #  namespaces:
+  #  - name: bookinfo-frontends
+  #  - name: bookinfo-backends
+  #  - name: gloo-mesh
   - name: cluster1
+    namespaces:
+    - name: bookinfo-frontends
+    - name: bookinfo-backends
+  - name: cluster2
     namespaces:
     - name: bookinfo-frontends
     - name: bookinfo-backends
