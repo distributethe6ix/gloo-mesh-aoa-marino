@@ -33,7 +33,7 @@ spec:
                   annotations:
                     sidecar.istio.io/inject: "true"
                   labels:
-                    istio.io/rev: "1-12"
+                    istio.io/rev: "1-13"
     repoURL: https://storage.googleapis.com/gloo-mesh-enterprise/gloo-mesh-enterprise
     targetRevision: 2.0.7
   syncPolicy:

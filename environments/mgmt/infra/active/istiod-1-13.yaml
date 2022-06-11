@@ -22,12 +22,12 @@ spec:
         global:
           meshID: mesh1
           multiCluster:
-            clusterName: cluster1
+            clusterName: mgmt
           network: network1
           hub: us-docker.pkg.dev/gloo-mesh/istio-workshops
           tag: 1.13.4-solo
         meshConfig:
-          trustDomain: cluster1
+          trustDomain: mgmt
           accessLogFile: /dev/stdout
           enableAutoMtls: true
           defaultConfig:
@@ -38,7 +38,7 @@ spec:
             proxyMetadata:
               ISTIO_META_DNS_CAPTURE: "true"
               ISTIO_META_DNS_AUTO_ALLOCATE: "true"
-              GLOO_MESH_CLUSTER_NAME: cluster1
+              GLOO_MESH_CLUSTER_NAME: mgmt
         pilot:
           env:
             PILOT_ENABLE_K8S_SELECT_WORKLOAD_ENTRIES: "false"
