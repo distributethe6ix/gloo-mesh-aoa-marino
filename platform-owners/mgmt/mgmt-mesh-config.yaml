@@ -8,7 +8,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/ably77/gloo-mesh-aoa/
+    repoURL: https://github.com/distributethe6ix/gloo-mesh-aoa/
     targetRevision: 1.13-v2.0.7-certmanager-selfmanaged
     path: environments/mgmt/mesh-config/active/
   destination:
