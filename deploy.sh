@@ -2,7 +2,7 @@
 #set -e
 
 # note that the character '_' is an invalid value if you are replacing the defaults below
-mgmt_context="mgmt"
+mgmt_context="solonet01"
 gloo_mesh_version="2.0.7"
 
 # check to see if defined contexts exist
